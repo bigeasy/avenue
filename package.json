@@ -8,6 +8,7 @@
                           "router", "html5", "middleware", "async", "asynchronous"
     ],
     "homepage":           "https://github.com/bigeasy/avenue",
+    "bugs":               "https://github.com/bigeasy/avenue/issues",
     "licenses":
     [{
                           "type": "MIT",
