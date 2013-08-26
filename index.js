@@ -33,7 +33,7 @@ function routes (base, suffix) {
                     // Note that we do not use the file system's path separator when
                     // resolving stencils.
                     routes.push({
-                        route: '/' + route.join('/'),
+                        route: ('/' + route.join('/')).replace(/\/%/g, '/:'),
                         script: parts.concat(entry).join('/'),
                         path: route.slice(),
                         file: entry,
