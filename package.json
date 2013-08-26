@@ -7,16 +7,16 @@
     [
                           "router", "html5", "middleware", "async", "asynchronous"
     ],
-    "homepage":           "https://github.com/bigeasy/reactor",
+    "homepage":           "https://github.com/bigeasy/avenue",
     "licenses":
     [{
                           "type": "MIT",
-                          "url": "http://github.com/bigeasy/reactor/raw/master/LICENSE"
+                          "url": "http://github.com/bigeasy/avenue/raw/master/LICENSE"
     }],
     "repository":
     {
                           "type": "git",
-                          "url": "http://github.com/bigeasy/reactor.git"
+                          "url": "http://github.com/bigeasy/avenue.git"
     },
     "devDependencies":
     {
