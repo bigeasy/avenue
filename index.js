@@ -30,8 +30,6 @@ function routes (base, suffix) {
 
                     if (name != 'index') route.push(name)
 
-                    // Note that we do not use the file system's path separator when
-                    // resolving stencils.
                     routes.push({
                         route: ('/' + route.join('/')).replace(/\/%/g, '/*:'),
                         script: parts.concat(entry).join('/'),
