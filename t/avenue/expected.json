@@ -85,33 +85,33 @@
   },
   {
     "route": "/*:param",
-    "script": "%param_.t.js",
+    "script": "%param_.cgi.js",
     "path": [
       "%param"
     ],
-    "file": "%param_.t.js",
+    "file": "%param_.cgi.js",
     "name": "%param",
-    "extension": "t"
+    "extension": "cgi"
   },
   {
     "route": "/%param/**:pathInfo",
-    "script": "%param_.t.js",
+    "script": "%param_.cgi.js",
     "path": [
       "%param"
     ],
-    "file": "%param_.t.js",
+    "file": "%param_.cgi.js",
     "name": "%param",
-    "extension": "t"
+    "extension": "cgi"
   },
   {
     "route": "/*:param",
-    "script": "%param.t.js",
+    "script": "%param.cgi.js",
     "path": [
       "%param"
     ],
-    "file": "%param.t.js",
+    "file": "%param.cgi.js",
     "name": "%param",
-    "extension": "t"
+    "extension": "cgi"
   },
   {
     "route": "/directory",
