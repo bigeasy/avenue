@@ -58,7 +58,7 @@
 }
 /* vim: set ts=4 sw=4: */
 html {
-  background: #f7f7f7;
+  background: #fdfdfd;
   font-size: 100%;
   color: #1a1a1a;
 }
@@ -71,8 +71,6 @@ img {
   max-width: 100%;
 }
 .container {
-  /* Whatever you want. They’re your oats. */
-
   max-width: 60em;
   margin: 0 auto;
   padding: 0 0;
