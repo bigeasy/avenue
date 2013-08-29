@@ -2,10 +2,10 @@
     "name":               "avenue",
     "description":        "File system dervied routes for Node.js and the browser.",
     "author":             "Alan Gutierrez",
-    "version":            "0.0.0",
+    "version":            "0.0.1",
     "keywords":
     [
-                          "router", "html5", "middleware", "async", "asynchronous"
+                          "router", "html5", "middleware", "routes", "browser", "filesystem"
     ],
     "homepage":           "https://github.com/bigeasy/avenue",
     "bugs":               "https://github.com/bigeasy/avenue/issues",
