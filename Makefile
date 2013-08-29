@@ -19,5 +19,5 @@ css/%.css: css/%.less
 clean:
 	rm $(sources)
 
-serve:
+serve: all
 	node_modules/.bin/serve -p 4000
