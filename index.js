@@ -8,15 +8,18 @@ function routes (base, suffix) {
     function children (base, parts) {
         var dir = path.join.apply(path, [ base ].concat(parts))
         var files = []
+        var directories = []
+        var start = routes.length
 
-        fs.readdirSync(dir).forEach(function (entry) {
+        fs.readdirSync(dir).sort().reverse().forEach(function (entry) {
             var file = path.join(dir, entry), stat = fs.statSync(file)
             if (stat.isDirectory()) {
-                children(base, parts.concat(entry))
+                directories.push(entry)
             } else {
                 files.push(entry)
             }
         })
+
         files.forEach(function (entry) {
             var file = path.join(dir, entry)
             var suffixed
@@ -27,20 +30,19 @@ function routes (base, suffix) {
                     var pathInfo = !! $[2]
                     var extension = $[3]
                     var route = parts.slice(0)
+                    var index = routes.length
 
-                    if (name != 'index') route.push(name)
-
-                    routes.push({
-                        route: ('/' + route.join('/')).replace(/\/%/g, '/*:'),
-                        script: parts.concat(entry).join('/'),
-                        path: route.slice(),
-                        file: entry,
-                        name: name,
-                        extension: extension.slice(0, - dotted.length)
-                    })
+                    if (name == 'index') {
+                        if (pathInfo) {
+                            index = start++
+                        }
+                    } else {
+                        route.push(name)
+                    }
 
                     if (pathInfo) {
-                        routes.push({
+                        routes.splice(index, 0, {
+                            // todo: also rewrite
                             route: '/' + route.join('/') + '/**:pathInfo',
                             script: parts.concat(entry).join('/'),
                             path: route.slice(),
@@ -49,8 +51,26 @@ function routes (base, suffix) {
                             extension: extension.slice(0, - dotted.length)
                         })
                     }
+
+                    routes.splice(index, 0, {
+                        route: ('/' + route.join('/')).replace(/\/%/g, '/*:'),
+                        script: parts.concat(entry).join('/'),
+                        path: route.slice(),
+                        file: entry,
+                        name: name,
+                        extension: extension.slice(0, - dotted.length)
+                    })
                 }
             }
+
+            false && console.log({
+                sorted: files,
+                inserted: routes.map(function (step) { return step.script })
+            })
+        })
+
+        directories.forEach(function (entry) {
+            children(base, parts.concat(entry))
         })
     }
 
