@@ -1,0 +1,137 @@
+[
+  {
+    "route": "/",
+    "script": "index_.cgi.js",
+    "path": [],
+    "file": "index_.cgi.js",
+    "name": "index",
+    "extension": "cgi"
+  },
+  {
+    "route": "//**:pathInfo",
+    "script": "index_.cgi.js",
+    "path": [],
+    "file": "index_.cgi.js",
+    "name": "index",
+    "extension": "cgi"
+  },
+  {
+    "route": "/pathed_before_exact",
+    "script": "pathed_before_exact_.cgi.js",
+    "path": [
+      "pathed_before_exact"
+    ],
+    "file": "pathed_before_exact_.cgi.js",
+    "name": "pathed_before_exact",
+    "extension": "cgi"
+  },
+  {
+    "route": "/pathed_before_exact/**:pathInfo",
+    "script": "pathed_before_exact_.cgi.js",
+    "path": [
+      "pathed_before_exact"
+    ],
+    "file": "pathed_before_exact_.cgi.js",
+    "name": "pathed_before_exact",
+    "extension": "cgi"
+  },
+  {
+    "route": "/pathed_before_exact",
+    "script": "pathed_before_exact.cgi.js",
+    "path": [
+      "pathed_before_exact"
+    ],
+    "file": "pathed_before_exact.cgi.js",
+    "name": "pathed_before_exact",
+    "extension": "cgi"
+  },
+  {
+    "route": "/pathed",
+    "script": "pathed_.get.js",
+    "path": [
+      "pathed"
+    ],
+    "file": "pathed_.get.js",
+    "name": "pathed",
+    "extension": "get"
+  },
+  {
+    "route": "/pathed/**:pathInfo",
+    "script": "pathed_.get.js",
+    "path": [
+      "pathed"
+    ],
+    "file": "pathed_.get.js",
+    "name": "pathed",
+    "extension": "get"
+  },
+  {
+    "route": "/",
+    "script": "index.cgi.js",
+    "path": [],
+    "file": "index.cgi.js",
+    "name": "index",
+    "extension": "cgi"
+  },
+  {
+    "route": "/exact",
+    "script": "exact.js",
+    "path": [
+      "exact"
+    ],
+    "file": "exact.js",
+    "name": "exact",
+    "extension": ""
+  },
+  {
+    "route": "/*:param",
+    "script": "%param_.t.js",
+    "path": [
+      "%param"
+    ],
+    "file": "%param_.t.js",
+    "name": "%param",
+    "extension": "t"
+  },
+  {
+    "route": "/%param/**:pathInfo",
+    "script": "%param_.t.js",
+    "path": [
+      "%param"
+    ],
+    "file": "%param_.t.js",
+    "name": "%param",
+    "extension": "t"
+  },
+  {
+    "route": "/*:param",
+    "script": "%param.t.js",
+    "path": [
+      "%param"
+    ],
+    "file": "%param.t.js",
+    "name": "%param",
+    "extension": "t"
+  },
+  {
+    "route": "/directory",
+    "script": "directory/index.get.js",
+    "path": [
+      "directory"
+    ],
+    "file": "index.get.js",
+    "name": "index",
+    "extension": "get"
+  },
+  {
+    "route": "/*:param/edit",
+    "script": "%param/edit.js",
+    "path": [
+      "%param",
+      "edit"
+    ],
+    "file": "edit.js",
+    "name": "edit",
+    "extension": ""
+  }
+]
