@@ -160,12 +160,22 @@ img {
 }
 .unit.description {
   width: 100%;
-}
-.unit.description .highlight > pre {
-  margin: 2em 0;
-  padding: 1em;
-  font-size: 1.15em;
-  font-family: "Oxygen Mono", 'Monaco', 'Cutive Mono', 'Oxygen Mono', monospace;
+  /*
+    pre {
+        margin: 2em 0;
+        padding: 1em;
+        border: 1px dotted #ccc;
+        font-size: 1.15em;
+        font-family: @code-font, 'Monaco', 'Cutive Mono', 'Oxygen Mono', monospace;
+    }
+    .x-highlight > pre {
+        margin: 2em 0;
+        padding: 1em;
+        font-size: 1.15em;
+        font-family: @code-font, 'Monaco', 'Cutive Mono', 'Oxygen Mono', monospace;
+    }
+    */
+
 }
 .unit.sidebar {
   width: 25%;
