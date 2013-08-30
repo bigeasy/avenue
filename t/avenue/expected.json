@@ -8,7 +8,7 @@
     "extension": "cgi"
   },
   {
-    "route": "//**:pathInfo",
+    "route": "/**:pathInfo",
     "script": "index_.cgi.js",
     "path": [],
     "file": "index_.cgi.js",

@@ -40,10 +40,12 @@ function routes (base, suffix) {
                         route.push(name)
                     }
 
+                    var joined = '/' + route.join('/')
+
                     if (pathInfo) {
                         routes.splice(index, 0, {
                             // todo: also rewrite
-                            route: '/' + route.join('/') + '/**:pathInfo',
+                            route: (joined == '/' ? '' : joined) + '/**:pathInfo',
                             script: parts.concat(entry).join('/'),
                             path: route.slice(),
                             file: entry,
@@ -53,7 +55,7 @@ function routes (base, suffix) {
                     }
 
                     routes.splice(index, 0, {
-                        route: ('/' + route.join('/')).replace(/\/%/g, '/*:'),
+                        route: joined.replace(/\/%/g, '/*:'),
                         script: parts.concat(entry).join('/'),
                         path: route.slice(),
                         file: entry,
