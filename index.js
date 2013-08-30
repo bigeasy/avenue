@@ -1,6 +1,10 @@
 var fs = require('fs')
 var path = require('path')
 
+function parameterize (path) {
+    return path.replace(/\/%/g, '/*:')
+}
+
 function routes (base, suffix) {
     var routes = []
     var dotted = '.' + suffix
@@ -44,8 +48,7 @@ function routes (base, suffix) {
 
                     if (pathInfo) {
                         routes.splice(index, 0, {
-                            // todo: also rewrite
-                            route: (joined == '/' ? '' : joined) + '/**:pathInfo',
+                            route: parameterize((joined == '/' ? '' : joined) + '/**:pathInfo'),
                             script: parts.concat(entry).join('/'),
                             path: route.slice(),
                             file: entry,
@@ -55,7 +58,7 @@ function routes (base, suffix) {
                     }
 
                     routes.splice(index, 0, {
-                        route: joined.replace(/\/%/g, '/*:'),
+                        route: parameterize(joined),
                         script: parts.concat(entry).join('/'),
                         path: route.slice(),
                         file: entry,

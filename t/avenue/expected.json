@@ -94,7 +94,7 @@
     "extension": "cgi"
   },
   {
-    "route": "/%param/**:pathInfo",
+    "route": "/*:param/**:pathInfo",
     "script": "%param_.cgi.js",
     "path": [
       "%param"
