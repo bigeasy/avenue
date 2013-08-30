@@ -2,7 +2,7 @@
     "name":               "avenue",
     "description":        "File system dervied routes for Node.js and the browser.",
     "author":             "Alan Gutierrez",
-    "version":            "0.0.1",
+    "version":            "0.0.2",
     "keywords":
     [
                           "router", "html5", "middleware", "routes", "browser", "filesystem"
