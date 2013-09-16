@@ -53,6 +53,7 @@ function routes (base, suffix) {
                             path: route.slice(),
                             file: entry,
                             name: name,
+                            base: base,
                             extension: extension.slice(0, - dotted.length)
                         })
                     }
@@ -63,6 +64,7 @@ function routes (base, suffix) {
                         path: route.slice(),
                         file: entry,
                         name: name,
+                        base: base,
                         extension: extension.slice(0, - dotted.length)
                     })
                 }

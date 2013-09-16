@@ -5,6 +5,7 @@
     "path": [],
     "file": "index_.cgi.js",
     "name": "index",
+    "base": "t/avenue/fixtures",
     "extension": "cgi"
   },
   {
@@ -13,6 +14,7 @@
     "path": [],
     "file": "index_.cgi.js",
     "name": "index",
+    "base": "t/avenue/fixtures",
     "extension": "cgi"
   },
   {
@@ -23,6 +25,7 @@
     ],
     "file": "pathed_before_exact_.cgi.js",
     "name": "pathed_before_exact",
+    "base": "t/avenue/fixtures",
     "extension": "cgi"
   },
   {
@@ -33,6 +36,7 @@
     ],
     "file": "pathed_before_exact_.cgi.js",
     "name": "pathed_before_exact",
+    "base": "t/avenue/fixtures",
     "extension": "cgi"
   },
   {
@@ -43,6 +47,7 @@
     ],
     "file": "pathed_before_exact.cgi.js",
     "name": "pathed_before_exact",
+    "base": "t/avenue/fixtures",
     "extension": "cgi"
   },
   {
@@ -53,6 +58,7 @@
     ],
     "file": "pathed_.get.js",
     "name": "pathed",
+    "base": "t/avenue/fixtures",
     "extension": "get"
   },
   {
@@ -63,6 +69,7 @@
     ],
     "file": "pathed_.get.js",
     "name": "pathed",
+    "base": "t/avenue/fixtures",
     "extension": "get"
   },
   {
@@ -71,6 +78,7 @@
     "path": [],
     "file": "index.cgi.js",
     "name": "index",
+    "base": "t/avenue/fixtures",
     "extension": "cgi"
   },
   {
@@ -81,6 +89,7 @@
     ],
     "file": "exact.js",
     "name": "exact",
+    "base": "t/avenue/fixtures",
     "extension": ""
   },
   {
@@ -91,6 +100,7 @@
     ],
     "file": "%param_.cgi.js",
     "name": "%param",
+    "base": "t/avenue/fixtures",
     "extension": "cgi"
   },
   {
@@ -101,6 +111,7 @@
     ],
     "file": "%param_.cgi.js",
     "name": "%param",
+    "base": "t/avenue/fixtures",
     "extension": "cgi"
   },
   {
@@ -111,6 +122,7 @@
     ],
     "file": "%param.cgi.js",
     "name": "%param",
+    "base": "t/avenue/fixtures",
     "extension": "cgi"
   },
   {
@@ -121,6 +133,7 @@
     ],
     "file": "index.get.js",
     "name": "index",
+    "base": "t/avenue/fixtures",
     "extension": "get"
   },
   {
@@ -132,6 +145,7 @@
     ],
     "file": "edit.js",
     "name": "edit",
+    "base": "t/avenue/fixtures",
     "extension": ""
   }
 ]
