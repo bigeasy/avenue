@@ -69,11 +69,6 @@ function routes (base, suffix) {
                     })
                 }
             }
-
-            false && console.log({
-                sorted: files,
-                inserted: routes.map(function (step) { return step.script })
-            })
         })
 
         directories.forEach(function (entry) {
