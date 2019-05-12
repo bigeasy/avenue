@@ -1,11 +1,11 @@
 {
     "name":               "avenue",
-    "description":        "File system dervied routes for Node.js and the browser.",
+    "description":        "An async/await event queue.",
     "author":             "Alan Gutierrez",
     "version":            "0.0.3",
     "keywords":
     [
-                          "router", "html5", "middleware", "routes", "browser", "filesystem"
+                          "queue", "es6", "async", "await"
     ],
     "homepage":           "https://github.com/bigeasy/avenue",
     "bugs":               "https://github.com/bigeasy/avenue/issues",
@@ -17,17 +17,16 @@
     "repository":
     {
                           "type": "git",
-                          "url": "http://github.com/bigeasy/avenue.git"
+                          "url": "bigeasy/avenue"
     },
     "devDependencies":
     {
-                          "proof": "0.0.47",
-                          "uglify-js": "~1.3"
     },
     "dependencies":
     {},
+    "main":               "avenue",
     "scripts":
     {
-                          "test": "proof platform win32 && proof test t/*/*.t.js || t/test"
+                          "test": "mocha"
     }
 }
