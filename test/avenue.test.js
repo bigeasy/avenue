@@ -120,7 +120,7 @@ describe('avenue', () => {
         assert.equal(queue.size, 0, 'shifted size')
         second.destroy()
     })
-    it('can push back on submissions until drained', async () => {
+    it('can push back on splices until drained', async () => {
         const queue = new Avenue(3)
         const shifter = queue.shifter()
         const first = queue.enqueue([ 1, 2, 3, 4, 5 ])
@@ -131,6 +131,14 @@ describe('avenue', () => {
         assert.deepStrictEqual(await shifter.splice(5), [ 2, 3, 4 ], 'remaining')
         assert.deepStrictEqual(await shifter.splice(5), [ 5 ], 'remaining')
         await second
+    })
+    it('can wait on splices until enqueued', async () => {
+        const queue = new Avenue
+        const shifter = queue.shifter()
+        const splice = shifter.splice(3)
+        await queue.enqueue([ 1, 2, 3, 4, 5 ])
+        assert.deepStrictEqual(await splice, [ 1, 2, 3 ], 'first 3')
+        shifter.destroy()
     })
     it('can end of stream', async () => {
         const queue = new Avenue

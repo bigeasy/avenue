@@ -9,6 +9,7 @@ class Sync {
         return this.async.shifter()
     }
 
+    // Do not awake until all values are enqueued.
     push (value) {
         const queue = this.async
         queue.size++

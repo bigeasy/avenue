@@ -184,8 +184,13 @@ class Shifter {
     }
 
     async shift () {
-        const splice = await this.splice(1)
-        return splice.length == 1 ? splice[0] : null
+        for (;;) {
+            const entry = this.sync._shift(true)
+            if (entry != null || this.destroyed) {
+                return entry
+            }
+            await new Promise(resolve => this.queue._shifting.push(this._resolve = resolve))
+        }
     }
 
     _twist (count) {
@@ -198,35 +203,19 @@ class Shifter {
         const entries = []
         const size = this.queue.size
         for (;;) {
-            if (this.destroyed || count == entries.length) {
+            if (count == entries.length) {
                 this._twist(size - this.queue.size)
                 return entries
             }
-            const entry = this._head.next
+            const entry = this.sync._shift(false)
             if (entry == null) {
-                if (entries.length != 0) {
+                if (entries.length != 0 || this.destroyed) {
                     this._twist(size - this.queue.size)
                     return entries
                 }
                 await new Promise(resolve => this.queue._shifting.push(this._resolve = resolve))
-            }  else if (entry.end) {
-                this.destroyed = true
-                this.queue.shifters--
             } else {
-                this._head = this._head.next
-                if (entry.value != null) {
-                    entry.count++
-                    entries.push(entry.value)
-                }
-                if (entry.shifters != 0) {
-                    this._shifters += entry.shifters
-                }
-                if (entry.unshifters != 0) {
-                    this._shifters -= entry.unshifters
-                }
-                if (entry.count == this._shifters) {
-                    this.queue.size--
-                }
+                entries.push(entry)
             }
         }
     }
