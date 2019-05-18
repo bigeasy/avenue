@@ -19,12 +19,27 @@ describe('avenue', () => {
         shifter.destroy()
         shifter.destroy()
     })
+    it('can determine if a shifter is empty', async () => {
+        const queue = new Avenue
+        const shifter = queue.shifter()
+        const subsequent = queue.shifter()
+        assert(shifter.empty, 'is empty')
+        await queue.push(null)
+        assert(!shifter.empty, 'is empty')
+        shifter.destroy()
+        assert(shifter.empty, 'is empty')
+    })
     it('can construct a shifter from sync interface', async () => {
         const queue = new Avenue
         const shifter = queue.sync.shifter()
         queue.push(null)
         assert.equal(await shifter.shift(), null, 'end')
         shifter.destroy()
+    })
+    it('can pair a shifter with its queue', () => {
+        const paired = new Avenue().shifter().paired
+        assert(paired.queue != null, 'queue')
+        assert(paired.shifter != null, 'shifter')
     })
     it('can push a value', async () => {
         const queue = new Avenue

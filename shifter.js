@@ -17,7 +17,7 @@ class Shifter {
         }
         let iterator = this._head.next
         while (iterator != null) {
-            if (iterator.value != null) {
+            if (iterator.value != null || iterator.end) {
                 return false
             }
             iterator = iterator.next
