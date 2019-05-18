@@ -1,23 +1,3 @@
-class Splicer {
-    constructor (shifter, splice) {
-        this._shifter = shifter
-        this._splice = splice
-    }
-
-    async pump (f) {
-        for (;;) {
-            const entries = await this._shifter.splice(this._splice)
-            const promise = f(entries)
-            if (promise instanceof Promise) {
-                await promise
-            }
-            if (entries.length == 0) {
-                break
-            }
-        }
-    }
-}
-
 class Shifter {
     constructor (queue) {
         this.destroyed = false
@@ -115,10 +95,6 @@ class Shifter {
         }
     }
 
-    splicer (splice) {
-        return new Splicer(this, splice)
-    }
-
     iterator (count) {
         if (count == null) {
             return {
@@ -150,15 +126,24 @@ class Shifter {
         }
     }
 
-    async pump (f) {
-        for (;;) {
-            const entry = await this.shift()
-            const promise = f(entry)
-            if (promise instanceof Promise) {
-                await promise
+    async pump (...vargs) {
+        const f = vargs.pop()
+        const count = vargs.pop()
+        if (count == null) {
+            for (;;) {
+                const entry = (await this.splice(1)).shift() || null
+                await f(entry)
+                if (entry == null) {
+                    break
+                }
             }
-            if (entry == null) {
-                break
+        } else {
+            for (;;) {
+                const entries = await this.splice(count)
+                await f(entries)
+                if (entries.length == 0) {
+                    break
+                }
             }
         }
     }

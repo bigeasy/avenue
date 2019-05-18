@@ -131,7 +131,7 @@ describe('avenue', () => {
         const entries = [ 1, 2, 3, null ]
         await queue.enqueue(entries)
         entries.pop()
-        await shifter.splicer(3).pump((got) => assert.deepStrictEqual(got, entries.splice(0, 3)))
+        await shifter.pump(3, (got) => assert.deepStrictEqual(got, entries.splice(0, 3)))
         assert.deepStrictEqual(entries, [], 'consumed all entries')
     })
     it('can pump splices to an async function', async () => {
@@ -140,7 +140,7 @@ describe('avenue', () => {
         const entries = [ 1, 2, 3, null ]
         await queue.enqueue(entries)
         entries.pop()
-        await shifter.splicer(3).pump(async (got) => assert.deepStrictEqual(got, entries.splice(0, 3)))
+        await shifter.pump(3, async (got) => assert.deepStrictEqual(got, entries.splice(0, 3)))
         assert.deepStrictEqual(entries, [], 'consumed all entries')
     })
 })
