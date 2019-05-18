@@ -10,7 +10,7 @@ class Sync {
     }
 
     // Do not awake until all values are enqueued.
-    push (value) {
+    _push (value) {
         const queue = this.async
         queue.size++
         queue._head = queue._head.next = {
@@ -21,17 +21,18 @@ class Sync {
             shifters: 0,
             unshifters: 0
         }
-        if (queue._shifting.length != 0) {
-            for (let resolve of queue._shifting.splice(0)) {
-                resolve.call()
-            }
-        }
+    }
+
+    push (value) {
+        this._push(value)
+        this.async._resolve()
     }
 
     enqueue (values) {
         for (let value of values) {
-            this.push(value)
+            this._push(value)
         }
+        this.async._resolve()
     }
 }
 
@@ -57,6 +58,14 @@ class Avenue {
         }
         this.shifters++
         return new Shifter(this)
+    }
+
+    _resolve () {
+        if (this._shifting.length != 0) {
+            for (let resolve of this._shifting.splice(0)) {
+                resolve.call()
+            }
+        }
     }
 
     async push (value) {
