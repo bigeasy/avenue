@@ -54,6 +54,21 @@ class Sync {
         }
         return null
     }
+
+    splice (count) {
+        const entries = []
+        if (this.async.destroyed) {
+            return entries
+        }
+        while (entries.length < count) {
+            const entry = this.shift()
+            if (entry == null) {
+                return entries
+            }
+            entries.push(entry)
+        }
+        return entries
+    }
 }
 
 class Shifter {

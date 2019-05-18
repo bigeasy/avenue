@@ -194,7 +194,6 @@ describe('avenue', () => {
     it('can shift synchronously', () => {
         const queue = new Avenue
         const shifter = queue.shifter().sync
-        debugger
         queue.shifter().destroy()
         const other = queue.shifter().sync
         queue.sync.push(1)
@@ -208,5 +207,15 @@ describe('avenue', () => {
         assert.equal(shifter.shift(), null, 'shift end of queue')
         assert(shifter.destroyed, 'destroyed by end of queue')
         assert.equal(shifter.shift(), null, 'shift after destroyed')
+    })
+    it('can splice synchronously', () => {
+        const queue = new Avenue().sync
+        const shifter = queue.shifter().sync
+        assert.deepStrictEqual(shifter.splice(1), [], 'empty')
+        queue.enqueue([ 1, 2, 3 ])
+        assert.deepStrictEqual(shifter.splice(2), [ 1, 2 ], 'hit limit')
+        assert.deepStrictEqual(shifter.splice(2), [ 3 ], 'less than limit')
+        shifter.destroy()
+        assert.deepStrictEqual(shifter.splice(1), [], 'empty')
     })
 })
