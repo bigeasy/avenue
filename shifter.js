@@ -119,6 +119,7 @@ class Shifter {
         this._resolve = () => {}
         this._shifters = queue.shifters
         this.sync = new Sync(this)
+        this.end = new Promise(resolve => this._end = resolve)
     }
 
     get paired () {
@@ -185,6 +186,7 @@ class Shifter {
             this.queue._twist()
             this.destroyed = true
             this._resolve.call()
+            this._end.call()
         }
     }
 
