@@ -32,6 +32,7 @@ class Sync {
         const shifter = this.async
         while (shifter._head.next != null) {
             const entry = shifter._head = shifter._head.next
+            entry.count++
             if (entry.shifters != 0) {
                 shifter._shifters += entry.shifters
             }
@@ -39,7 +40,6 @@ class Sync {
                 shifter._shifters -= entry.unshifters
             }
             if (entry.value != null) {
-                entry.count++
                 if (entry.count == shifter._shifters) {
                     this.async.queue.size--
                     if (twist) {
@@ -153,26 +153,33 @@ class Shifter {
         return null
     }
 
-    // TODO Here we zip to the end to account for all the entries we would have
-    // consusumed, but we only need to chomp the entries that are still be held
-    // for us because we're lagging. Once there is at least one more shifter
-    // waiting for an entry we can stop scanning forward.
     destroy () {
         if (!this.destroyed) {
             this.queue.shifters--
             if (this.queue.shifters == 0) {
                 this.queue.size = 0
             } else {
-                while (this.sync._shift(false) != null) {
+                while (this._head.next != null) {
+                    if (this._head.next.value == null) {
+                        this._head.next.count++
+                    } else if (this._head.next.count == this.queue.shifters) {
+                        this.queue.size--
+                    } else {
+                        break
+                    }
+                    this._head = this._head.next
                 }
-                assert (this._head.next == null)
-                this.queue._head = this.queue._head.next = {
-                    next: null,
-                    value: null,
-                    end: false,
-                    count: 0,
-                    shifters: 0,
-                    unshifters: 1
+                if (this._head.next == null) {
+                    this._head.next = {
+                        next: null,
+                        value: null,
+                        end: false,
+                        count: 0,
+                        shifters: 0,
+                        unshifters: 1
+                    }
+                } else {
+                    this._head.next.unshifters++
                 }
             }
             this.queue._twist()

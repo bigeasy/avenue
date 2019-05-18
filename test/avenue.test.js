@@ -34,7 +34,6 @@ describe('avenue', () => {
     it('can determine if a shifter is empty', async () => {
         const queue = new Avenue
         const shifter = queue.shifter()
-        debugger
         queue.shifter() // create an add shifter node to skip
         assert(shifter.empty, 'is empty')
         await queue.push(null)
@@ -145,6 +144,16 @@ describe('avenue', () => {
         const shifter = queue.shifter()
         await queue.enqueue([ 1, 2, 3, null ])
         assert.deepStrictEqual(await shifter.splice(4), [ 1, 2, 3 ], 'eos')
+    })
+    it('can zip up wating entries when a laggard shifter is destroyed', () => {
+        const queue = new Avenue().sync
+        const laggard = queue.shifter().sync
+        const shifter = queue.shifter().sync
+        queue.enqueue([ 1, 2, 3 ])
+        assert.deepStrictEqual(shifter.splice(3), [ 1, 2, 3 ], 'spliced')
+        assert.equal(queue.size, 3, 'laggard holding entries')
+        laggard.destroy()
+        assert.equal(queue.size, 0, 'zipped')
     })
     it('shifter iterator is iterable', async () => {
         const queue = new Avenue

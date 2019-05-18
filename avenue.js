@@ -5,6 +5,10 @@ class Sync {
         this.async = queue
     }
 
+    get size () {
+        return this.async.size
+    }
+
     shifter () {
         return this.async.shifter()
     }
@@ -52,7 +56,7 @@ class Avenue {
             next: null,
             value: null,
             end: false,
-            count: -1,
+            count: 0,
             shifters: 1,
             unshifters: 0
         }
