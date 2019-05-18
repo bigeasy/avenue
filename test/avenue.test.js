@@ -191,4 +191,22 @@ describe('avenue', () => {
         await shifter.pump(3, async (got) => assert.deepStrictEqual(got, entries.splice(0, 3)))
         assert.deepStrictEqual(entries, [], 'consumed all entries')
     })
+    it('can shift synchronously', () => {
+        const queue = new Avenue
+        const shifter = queue.shifter().sync
+        debugger
+        queue.shifter().destroy()
+        const other = queue.shifter().sync
+        queue.sync.push(1)
+        assert.equal(shifter.shift(), 1, 'shift')
+        assert.equal(shifter.shift(), null, 'shift end of available')
+        assert.equal(queue.size, 1, 'queue has items')
+        assert.equal(other.shift(), 1, 'shift')
+        assert.equal(queue.size, 0, 'queue is empty')
+        other.destroy()
+        queue.sync.push(null)
+        assert.equal(shifter.shift(), null, 'shift end of queue')
+        assert(shifter.destroyed, 'destroyed by end of queue')
+        assert.equal(shifter.shift(), null, 'shift after destroyed')
+    })
 })

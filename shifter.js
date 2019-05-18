@@ -25,6 +25,35 @@ class Sync {
     destroy () {
         return this.async.destroy()
     }
+
+    shift () {
+        if (this.destroyed) {
+            return null
+        }
+        const shifter = this.async
+        while (shifter._head.next != null) {
+            const entry = shifter._head = shifter._head.next
+            if (entry.shifters != 0) {
+                shifter._shifters += entry.shifters
+            }
+            if (entry.unshifters != 0) {
+                shifter._shifters -= entry.unshifters
+            }
+            if (entry.value != null) {
+                entry.count++
+                if (entry.count == shifter._shifters) {
+                    this.async.queue.size--
+                    this.async._twist(1)
+                }
+                return entry.value
+            } else if (entry.end) {
+                this.async.destroyed = true
+                this.async.queue.shifters--
+                return null
+            }
+        }
+        return null
+    }
 }
 
 class Shifter {
@@ -73,7 +102,7 @@ class Shifter {
         if (!this.destroyed) {
             this.destroyed = true
             if (this._head.next == null) {
-                this._head.next = {
+                this.queue._head = this.queue._head.next = {
                     next: null,
                     value: null,
                     end: false,
@@ -94,8 +123,8 @@ class Shifter {
         return splice.length == 1 ? splice[0] : null
     }
 
-    _twist (size) {
-        if (this.queue._enqueuing.length != 0 && size - this.queue.size != 0) {
+    _twist (count) {
+        if (this.queue._enqueuing.length != 0 && count != 0) {
             this.queue._enqueuing.shift().call()
         }
     }
@@ -105,18 +134,19 @@ class Shifter {
         const size = this.queue.size
         for (;;) {
             if (this.destroyed || count == entries.length) {
-                this._twist(size)
+                this._twist(size - this.queue.size)
                 return entries
             }
             const entry = this._head.next
             if (entry == null) {
                 if (entries.length != 0) {
-                    this._twist(size)
+                    this._twist(size - this.queue.size)
                     return entries
                 }
                 await new Promise(resolve => this.queue._shifting.push(this._resolve = resolve))
             }  else if (entry.end) {
                 this.destroyed = true
+                this.queue.shifters--
             } else {
                 this._head = this._head.next
                 if (entry.value != null) {
