@@ -29,6 +29,18 @@ describe('avenue', () => {
         shifter.destroy()
         assert(shifter.empty, 'is empty')
     })
+    it('can peek', async () => {
+        const queue = new Avenue
+        const shifter = queue.shifter()
+        const subsequent = queue.shifter()
+        assert.equal(shifter.peek(), null, 'is empty')
+        await queue.push(1)
+        assert.equal(shifter.peek(), 1, 'peek')
+        await shifter.shift()
+        assert.equal(shifter.peek(), null, 'peek end of queue')
+        shifter.destroy()
+        assert.equal(shifter.peek(), null, 'peek empty')
+    })
     it('can construct a shifter from sync interface', async () => {
         const queue = new Avenue
         const shifter = queue.sync.shifter()

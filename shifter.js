@@ -26,6 +26,17 @@ class Shifter {
     }
 
     peek () {
+        if (this.destroyed) {
+            return null
+        }
+        let iterator = this._head.next
+        while (iterator != null) {
+            if (iterator.value != null || iterator.end) {
+                return iterator.value == null ? null : iterator.value
+            }
+            iterator = iterator.next
+        }
+        return null
     }
 
     destroy () {
