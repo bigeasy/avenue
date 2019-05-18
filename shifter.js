@@ -4,18 +4,6 @@ class Splicer {
         this._splice = splice
     }
 
-    [Symbol.asyncIterator]() {
-        return {
-            next: async () => {
-                const value = await this._shifter.splice(this._splice)
-                if (value.length == 0) {
-                    return { done: true }
-                }
-                return { done: false, value: value }
-            }
-        }
-    }
-
     async pump (f) {
         for (;;) {
             const entries = await this._shifter.splice(this._splice)
@@ -127,20 +115,6 @@ class Shifter {
         }
     }
 
-    [Symbol.asyncIterator]() {
-        return {
-            next: () => {
-                return (async () => {
-                    const value = await this.shift()
-                    if (value == null) {
-                        return { done: true }
-                    }
-                    return { value: value, done: false }
-                })()
-            }
-        }
-    }
-
     splicer (splice) {
         return new Splicer(this, splice)
     }
@@ -148,25 +122,29 @@ class Shifter {
     each (count) {
         if (count == null) {
             return {
-                [Symbol.asyncIterator]() {
-                    next: async () {
-                        const value = await this.shift()
-                        if (value == null) {
-                            return { done: true }
+                [Symbol.asyncIterator]: () => {
+                    return {
+                        next: async () => {
+                            const value = await this.shift()
+                            if (value == null) {
+                                return { done: true }
+                            }
+                            return { value: value, done: false }
                         }
-                        return { value: value, done: false }
                     }
                 }
             }
         }
         return {
-            [Symbol.asyncIterator]() {
-                next: async () {
-                    const value = await this.splice(count)
-                    if (value.length == 0) {
-                        return { done: true }
+            [Symbol.asyncIterator]: () => {
+                return {
+                    next: async () => {
+                        const value = await this.splice(count)
+                        if (value.length == 0) {
+                            return { done: true }
+                        }
+                        return { value: value, done: false }
                     }
-                    return { value: value, done: false }
                 }
             }
         }
