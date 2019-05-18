@@ -1,10 +1,40 @@
+class Sync {
+    constructor (shifter) {
+        this.async = shifter
+    }
+
+    get queue () {
+        return this.async.queue
+    }
+    get destroyed () {
+        return this.async.destroyed
+    }
+
+    get paired () {
+        return { queue: this.async.queue, shifter: this }
+    }
+
+    get empty () {
+        return this.async.empty
+    }
+
+    peek () {
+        return this.async.peek()
+    }
+
+    destroy () {
+        return this.async.destroy()
+    }
+}
+
 class Shifter {
     constructor (queue) {
+        this.queue = queue
         this.destroyed = false
         this._head = queue._head
-        this.queue = queue
         this._resolve = () => {}
         this._shifters = queue.shifters
+        this.sync = new Sync(this)
     }
 
     get paired () {

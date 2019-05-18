@@ -19,6 +19,18 @@ describe('avenue', () => {
         shifter.destroy()
         shifter.destroy()
     })
+    it('can get shared async shifter properties through the sync interface', () => {
+        const queue = new Avenue
+        const shifter = queue.shifter().sync
+        assert(!shifter.destroyed, 'not destroyed')
+        assert(shifter.queue === queue, 'queue')
+        const paired = shifter.paired
+        assert(paired.queue === queue, 'paired queue')
+        assert(paired.shifter === shifter, 'paired shifter')
+        assert(shifter.empty, 'empty')
+        assert.equal(shifter.peek(), null, 'peek')
+        shifter.destroy()
+    })
     it('can determine if a shifter is empty', async () => {
         const queue = new Avenue
         const shifter = queue.shifter()
