@@ -1,3 +1,5 @@
+const assert = require('assert')
+
 class Sync {
     constructor (shifter) {
         this.async = shifter
@@ -26,10 +28,7 @@ class Sync {
         return this.async.destroy()
     }
 
-    shift () {
-        if (this.destroyed) {
-            return null
-        }
+    _shift (twist) {
         const shifter = this.async
         while (shifter._head.next != null) {
             const entry = shifter._head = shifter._head.next
@@ -43,7 +42,9 @@ class Sync {
                 entry.count++
                 if (entry.count == shifter._shifters) {
                     this.async.queue.size--
-                    this.async._twist(1)
+                    if (twist) {
+                        this.async._twist(1)
+                    }
                 }
                 return entry.value
             } else if (entry.end) {
@@ -55,18 +56,27 @@ class Sync {
         return null
     }
 
+    shift () {
+        if (this.async.destroyed) {
+            return null
+        }
+        return this._shift(true)
+    }
+
     splice (count) {
         const entries = []
         if (this.async.destroyed) {
             return entries
         }
+        const size = this.async.queue.size
         while (entries.length < count) {
-            const entry = this.shift()
+            const entry = this._shift(false)
             if (entry == null) {
-                return entries
+                break
             }
             entries.push(entry)
         }
+        this.async._twist(this.async.queue.size - size)
         return entries
     }
 }
@@ -113,10 +123,20 @@ class Shifter {
         return null
     }
 
+    // TODO Here we zip to the end to account for all the entries we would have
+    // consusumed, but we only need to chomp the entries that are still be held
+    // for us because we're lagging. Once there is at least one more shifter
+    // waiting for an entry we can stop scanning forward.
     destroy () {
         if (!this.destroyed) {
-            this.destroyed = true
-            if (this._head.next == null) {
+            this.queue.shifters--
+            const size = this.queue.size
+            if (this.queue.shifters == 0) {
+                this.queue.size = 0
+            } else {
+                while (this.sync._shift(false) != null) {
+                }
+                assert (this._head.next == null)
                 this.queue._head = this.queue._head.next = {
                     next: null,
                     value: null,
@@ -125,10 +145,9 @@ class Shifter {
                     shifters: 0,
                     unshifters: 1
                 }
-            } else {
-                this._head.next.unshifters++
             }
-            this.queue.shifters--
+            this._twist(this.queue.size - size)
+            this.destroyed = true
             this._resolve.call()
         }
     }

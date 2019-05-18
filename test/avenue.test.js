@@ -34,6 +34,7 @@ describe('avenue', () => {
     it('can determine if a shifter is empty', async () => {
         const queue = new Avenue
         const shifter = queue.shifter()
+        debugger
         queue.shifter() // create an add shifter node to skip
         assert(shifter.empty, 'is empty')
         await queue.push(null)
