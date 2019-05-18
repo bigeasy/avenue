@@ -6,14 +6,12 @@ class Splicer {
 
     [Symbol.asyncIterator]() {
         return {
-            next: () => {
-                return (async () => {
-                    const value = await this._shifter.splice(this._splice)
-                    if (value.length == 0) {
-                        return { done: true }
-                    }
-                    return { done: false, value: value }
-                })()
+            next: async () => {
+                const value = await this._shifter.splice(this._splice)
+                if (value.length == 0) {
+                    return { done: true }
+                }
+                return { done: false, value: value }
             }
         }
     }
@@ -39,6 +37,27 @@ class Shifter {
         this._queue = queue
         this._resolve = () => {}
         this._shifters = queue.shifters
+    }
+
+    get paired () {
+        return { queue: this._queue, shifter: this }
+    }
+
+    get empty () {
+        if (this.destroyed) {
+            return true
+        }
+        let iterator = this._head.next
+        while (iterator != null) {
+            if (iterator.value != null) {
+                return false
+            }
+            iterator = iterator.next
+        }
+        return true
+    }
+
+    peek () {
     }
 
     destroy () {
@@ -124,6 +143,33 @@ class Shifter {
 
     splicer (splice) {
         return new Splicer(this, splice)
+    }
+
+    each (count) {
+        if (count == null) {
+            return {
+                [Symbol.asyncIterator]() {
+                    next: async () {
+                        const value = await this.shift()
+                        if (value == null) {
+                            return { done: true }
+                        }
+                        return { value: value, done: false }
+                    }
+                }
+            }
+        }
+        return {
+            [Symbol.asyncIterator]() {
+                next: async () {
+                    const value = await this.splice(count)
+                    if (value.length == 0) {
+                        return { done: true }
+                    }
+                    return { value: value, done: false }
+                }
+            }
+        }
     }
 
     async pump (f) {
