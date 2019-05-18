@@ -19,6 +19,13 @@ describe('avenue', () => {
         shifter.destroy()
         shifter.destroy()
     })
+    it('can construct a shifter from sync interface', async () => {
+        const queue = new Avenue
+        const shifter = queue.sync.shifter()
+        queue.push(null)
+        assert.equal(await shifter.shift(), null, 'end')
+        shifter.destroy()
+    })
     it('can push a value', async () => {
         const queue = new Avenue
         const shifter = queue.shifter()
