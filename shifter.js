@@ -119,7 +119,7 @@ class Shifter {
         return new Splicer(this, splice)
     }
 
-    each (count) {
+    iterator (count) {
         if (count == null) {
             return {
                 [Symbol.asyncIterator]: () => {

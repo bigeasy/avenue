@@ -89,22 +89,22 @@ describe('avenue', () => {
         await queue.enqueue([ 1, 2, 3, null ])
         assert.deepStrictEqual(await shifter.splice(4), [ 1, 2, 3 ], 'eos')
     })
-    it('shifter each is iterable', async () => {
+    it('shifter iterator is iterable', async () => {
         const queue = new Avenue
         const shifter = queue.shifter()
         const entries = [ 1, 2, 3, null ]
         await queue.enqueue(entries)
-        for await (const entry of shifter.each()) {
+        for await (const entry of shifter.iterator()) {
             assert.equal(entry, entries.shift(), 'looped')
         }
         assert.deepStrictEqual(entries, [ null ], 'stopped before null')
     })
-    it('shifter each is iterable by splice', async () => {
+    it('shifter iterator is iterable by splice', async () => {
         const queue = new Avenue
         const shifter = queue.shifter()
         const entries = [ 1, 2, 3, 4, 5, 6, null ]
         await queue.enqueue(entries)
-        for await (const splice of shifter.each(3)) {
+        for await (const splice of shifter.iterator(3)) {
             assert.deepStrictEqual(splice, entries.splice(0, 3), 'looped')
         }
         assert.deepStrictEqual(entries, [ null ], 'stopped before null')
