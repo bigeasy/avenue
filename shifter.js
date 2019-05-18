@@ -142,10 +142,12 @@ class Shifter {
         const count = vargs.pop()
         if (count == null) {
             for (;;) {
-                const entry = (await this.splice(1)).shift() || null
-                await f(entry)
-                if (entry == null) {
+                const entries = await this.splice(1)
+                if (entries.length == 0) {
+                    await f(null)
                     break
+                } else {
+                    await f(entries.shift())
                 }
             }
         } else {
