@@ -43,7 +43,7 @@ class Sync {
                 if (entry.count == shifter._shifters) {
                     this.async.queue.size--
                     if (twist) {
-                        this.async._twist(1)
+                        this.async.queue._twist()
                     }
                 }
                 return entry.value
@@ -68,7 +68,6 @@ class Sync {
         if (this.async.destroyed) {
             return entries
         }
-        const size = this.async.queue.size
         while (entries.length < count) {
             const entry = this._shift(false)
             if (entry == null) {
@@ -76,7 +75,7 @@ class Sync {
             }
             entries.push(entry)
         }
-        this.async._twist(this.async.queue.size - size)
+        this.async.queue._twist()
         return entries
     }
 
@@ -161,7 +160,6 @@ class Shifter {
     destroy () {
         if (!this.destroyed) {
             this.queue.shifters--
-            const size = this.queue.size
             if (this.queue.shifters == 0) {
                 this.queue.size = 0
             } else {
@@ -177,7 +175,7 @@ class Shifter {
                     unshifters: 1
                 }
             }
-            this._twist(this.queue.size - size)
+            this.queue._twist()
             this.destroyed = true
             this._resolve.call()
         }
@@ -193,24 +191,17 @@ class Shifter {
         }
     }
 
-    _twist (count) {
-        if (this.queue._enqueuing.length != 0 && count != 0) {
-            this.queue._enqueuing.shift().call()
-        }
-    }
-
     async splice (count) {
         const entries = []
-        const size = this.queue.size
         for (;;) {
             if (count == entries.length) {
-                this._twist(size - this.queue.size)
+                this.queue._twist()
                 return entries
             }
             const entry = this.sync._shift(false)
             if (entry == null) {
                 if (entries.length != 0 || this.destroyed) {
-                    this._twist(size - this.queue.size)
+                    this.queue._twist()
                     return entries
                 }
                 await new Promise(resolve => this.queue._shifting.push(this._resolve = resolve))

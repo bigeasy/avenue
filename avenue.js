@@ -68,6 +68,12 @@ class Avenue {
         }
     }
 
+    _twist () {
+        if (this._enqueuing.length != 0 && this.size < this.max) {
+            this._enqueuing.shift().call()
+        }
+    }
+
     async push (value) {
         if (this.shifters != 0) {
             this.enqueue([ value ])
