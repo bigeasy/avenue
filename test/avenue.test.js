@@ -219,4 +219,24 @@ describe('avenue', () => {
         shifter.destroy()
         assert.deepStrictEqual(shifter.splice(1), [], 'empty')
     })
+    it('can shift iterate synchronously', () => {
+        const queue = new Avenue().sync
+        const shifter = queue.shifter().sync
+        queue.push(1)
+        const entries = []
+        for (let entry of shifter.iterator()) {
+            entries.push(entry)
+        }
+        assert.deepStrictEqual(entries, [ 1 ], 'sync iterate')
+    })
+    it('can splice iterate synchronously', () => {
+        const queue = new Avenue().sync
+        const shifter = queue.shifter().sync
+        queue.enqueue([ 1, 2, 3 ])
+        const entries = []
+        for (let splice of shifter.iterator(2)) {
+            entries.push(splice)
+        }
+        assert.deepStrictEqual(entries, [ [ 1, 2 ], [ 3 ]  ], 'sync iterate')
+    })
 })

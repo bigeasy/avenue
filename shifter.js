@@ -79,6 +79,37 @@ class Sync {
         this.async._twist(this.async.queue.size - size)
         return entries
     }
+
+    iterator (count) {
+        if (count == null) {
+            return {
+                [Symbol.iterator]: () => {
+                    return {
+                        next: () => {
+                            const entry = this.shift()
+                            if (entry == null) {
+                                return { done: true }
+                            }
+                            return { done: false, value: entry }
+                        }
+                    }
+                }
+            }
+        }
+        return {
+            [Symbol.iterator]: () => {
+                return {
+                    next: () => {
+                        const entries = this.splice(count)
+                        if (entries.length == 0) {
+                            return { done: true }
+                        }
+                        return { done: false, value: entries }
+                    }
+                }
+            }
+        }
+    }
 }
 
 class Shifter {
