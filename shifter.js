@@ -2,13 +2,13 @@ class Shifter {
     constructor (queue) {
         this.destroyed = false
         this._head = queue._head
-        this._queue = queue
+        this.queue = queue
         this._resolve = () => {}
         this._shifters = queue.shifters
     }
 
     get paired () {
-        return { queue: this._queue, shifter: this }
+        return { queue: this.queue, shifter: this }
     }
 
     get empty () {
@@ -43,7 +43,7 @@ class Shifter {
             } else {
                 this._head.next.unshifters++
             }
-            this._queue.shifters--
+            this.queue.shifters--
             this._resolve.call()
         }
     }
@@ -54,14 +54,14 @@ class Shifter {
     }
 
     _twist (size) {
-        if (this._queue._enqueuing.length != 0 && size - this._queue.size != 0) {
-            this._queue._enqueuing.shift().call()
+        if (this.queue._enqueuing.length != 0 && size - this.queue.size != 0) {
+            this.queue._enqueuing.shift().call()
         }
     }
 
     async splice (count) {
         const entries = []
-        const size = this._queue.size
+        const size = this.queue.size
         for (;;) {
             if (this.destroyed || count == entries.length) {
                 this._twist(size)
@@ -73,7 +73,7 @@ class Shifter {
                     this._twist(size)
                     return entries
                 }
-                await new Promise(resolve => this._queue._shifting.push(this._resolve = resolve))
+                await new Promise(resolve => this.queue._shifting.push(this._resolve = resolve))
             }  else if (entry.end) {
                 this.destroyed = true
             } else {
@@ -89,7 +89,7 @@ class Shifter {
                     this._shifters -= entry.unshifters
                 }
                 if (entry.count == this._shifters) {
-                    this._queue.size--
+                    this.queue.size--
                 }
             }
         }
