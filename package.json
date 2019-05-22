@@ -2,7 +2,7 @@
     "name":               "avenue",
     "description":        "An async/await event queue.",
     "author":             "Alan Gutierrez <alan@prettyrobots.com>",
-    "version":            "0.1.0",
+    "version":            "0.1.1",
     "keywords":
     [
                           "queue", "es6", "async", "await"
