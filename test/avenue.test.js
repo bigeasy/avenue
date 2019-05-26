@@ -256,4 +256,18 @@ describe('avenue', () => {
         }
         assert.deepStrictEqual(entries, [ [ 1, 2 ], [ 3 ]  ], 'sync iterate')
     })
+    it('can create a shifter from a shifter', () => {
+        const queue = new Avenue().sync
+        const first = queue.shifter().sync
+        const second = first.shifter().sync
+        queue.enqueue([ 1, 2 ])
+        assert.deepStrictEqual(second.splice(2), [ 1, 2 ], 'advance one')
+        const third = second.shifter().sync
+        queue.push(3)
+        assert.equal(second.shift(), 3, 'move off from prototype')
+        assert.deepStrictEqual(first.splice(3), [ 1, 2, 3 ], 'advance past duplicate')
+        assert.equal(queue.size, 1, 'one remaining')
+        assert.equal(third.shift(), 3, 'move duplciate')
+        assert.equal(queue.size, 0, 'tidy')
+    })
 })

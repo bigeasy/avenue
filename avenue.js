@@ -61,7 +61,7 @@ class Avenue {
             unshifters: 0
         }
         this.shifters++
-        return new Shifter(this)
+        return new Shifter(this, this._head)
     }
 
     _resolve () {

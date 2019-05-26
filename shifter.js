@@ -8,6 +8,7 @@ class Sync {
     get queue () {
         return this.async.queue
     }
+
     get destroyed () {
         return this.async.destroyed
     }
@@ -18,6 +19,10 @@ class Sync {
 
     get empty () {
         return this.async.empty
+    }
+
+    shifter () {
+        return this.async.shifter()
     }
 
     peek () {
@@ -112,10 +117,10 @@ class Sync {
 }
 
 class Shifter {
-    constructor (queue) {
+    constructor (queue, head) {
         this.queue = queue
         this.destroyed = false
-        this._head = queue._head
+        this._head = head
         this._resolve = () => {}
         this._shifters = queue.shifters
         this.sync = new Sync(this)
@@ -138,6 +143,12 @@ class Shifter {
             iterator = iterator.next
         }
         return true
+    }
+
+    shifter () {
+        this._head.shifters++
+        this.queue.shifters++
+        return new Shifter(this.queue, this._head)
     }
 
     peek () {
