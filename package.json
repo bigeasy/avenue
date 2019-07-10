@@ -1,32 +1,32 @@
 {
-    "name":               "avenue",
-    "description":        "An async/await event queue.",
-    "author":             "Alan Gutierrez <alan@prettyrobots.com>",
-    "version":            "0.1.3",
+    "name":                 "avenue",
+    "version":              "0.1.3",
+    "description":
+
+      "An async/await event queue.",
+
     "keywords":
     [
-                          "queue", "es6", "async", "await"
+                            "queue", "es6", "async", "await"
     ],
-    "homepage":           "https://github.com/bigeasy/avenue",
-    "bugs":               "https://github.com/bigeasy/avenue/issues",
-    "licenses":
-    [{
-                          "type": "MIT",
-                          "url": "http://github.com/bigeasy/avenue/raw/master/LICENSE"
-    }],
+    "author":               "Alan Gutierrez <alan@prettyrobots.com>",
+    "homepage":             "https://github.com/bigeasy/avenue",
+    "bugs":                 "https://github.com/bigeasy/avenue/issues",
     "repository":
     {
-                          "type": "git",
-                          "url": "bigeasy/avenue"
+                            "type": "git",
+                            "url": "bigeasy/avenue"
+    },
+    "dependencies":
+    {
     },
     "devDependencies":
     {
+                            "staccato":                     "10.0.x"
     },
-    "dependencies":
-    {},
-    "main":               "avenue",
+    "main":                 "avenue",
     "scripts":
     {
-                          "test": "mocha"
+                            "test": "mocha"
     }
 }
