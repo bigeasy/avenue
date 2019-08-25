@@ -80,7 +80,7 @@ class Avenue {
 
     async push (value) {
         if (this.shifters != 0) {
-            this.enqueue([ value ])
+            await this.enqueue([ value ])
         }
     }
 
