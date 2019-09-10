@@ -124,6 +124,7 @@ class Shifter {
         this._resolve = () => {}
         this._shifters = queue.shifters
         this.sync = new Sync(this)
+        // **TODO** Doesn't work. We have to get to the end.
         this.end = new Promise(resolve => this._end = resolve)
     }
 

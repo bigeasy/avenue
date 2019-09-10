@@ -23,7 +23,7 @@
     },
     "devDependencies":
     {
-                            "staccato":                     "10.0.x"
+                            "staccato":                     "^11.0.0-alpha.1"
     },
     "main":                 "avenue",
     "scripts":
