@@ -1,11 +1,10 @@
-describe('serializer', () => {
-    const assert = require('assert')
+require('proof')(3, async (okay) => {
     const Serialize = require('../serialize')
     const Deserialize = require('../deserialize')
     const Staccato = require('staccato')
     const stream = require('stream')
     const Queue = require('..')
-    it('can serialize', async () => {
+    {
         const through = new stream.PassThrough
         const readable = new Staccato.Readable(through)
         const writable = new Staccato.Writable(through)
@@ -19,10 +18,10 @@ describe('serializer', () => {
         outbox.push({ a: 1 })
         outbox.push(null)
         await Promise.all([ promise.serializer, promise.deserialize ])
-        assert.deepStrictEqual(await shifter.shift(), { a: 1 }, 'serialized')
-        assert.equal(await shifter.shift(), null, 'eoa')
-    })
-    it('can break on write failure', async () => {
+        okay(await shifter.shift(), { a: 1 }, 'serialized')
+        okay(await shifter.shift(), null, 'eoa')
+    }
+    {
         const outbox = new Queue
         const test = []
         const promise = Serialize(outbox.shifter(), {
@@ -31,6 +30,6 @@ describe('serializer', () => {
         })
         outbox.push({ a: 1 })
         await promise
-        assert.deepStrictEqual(test, [ 'end' ], 'ended')
-    })
+        okay(test, [ 'end' ], 'write failure ended')
+    }
 })

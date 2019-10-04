@@ -1,242 +1,244 @@
-describe('avenue', () => {
+require('proof')(91, async (okay) => {
     const Avenue = require('../avenue')
-    const assert = require('assert')
-    it('can be constructed', () => {
+    {
         const queue = new Avenue
-        assert.equal(queue.size, 0, 'size')
-        assert.equal(queue.max, Infinity, 'max')
-    })
-    it('can ignore pushes when there are no shifters', async () => {
+        okay(queue.size, 0, 'constructed size')
+        okay(queue.max, Infinity, 'constructed max')
+    }
+    {
         const queue = new Avenue
         queue.push(1)
-        assert.equal(queue.size, 0, 'size')
+        okay(queue.size, 0, 'no shfiters size before')
         await queue.enqueue([ 1 ])
-        assert.equal(queue.size, 0, 'size')
-    })
-    it('can destroy a shifter before it ever used', async () => {
+        okay(queue.size, 0, 'no shifters size after')
+    }
+    {
         const queue = new Avenue
         const shifter = queue.shifter()
         shifter.destroy()
         shifter.destroy()
-    })
-    it('can get shared async shifter properties through the sync interface', () => {
+        okay(shifter.destroyed, 'destroyed before use')
+    }
+    {
         const queue = new Avenue
         const shifter = queue.shifter().sync
-        assert(!shifter.destroyed, 'not destroyed')
-        assert(shifter.queue === queue, 'queue')
+        okay(!shifter.destroyed, 'sync not destroyed')
+        okay(shifter.queue === queue, 'sync queue')
         const paired = shifter.paired
-        assert(paired.queue === queue, 'paired queue')
-        assert(paired.shifter === shifter, 'paired shifter')
-        assert(shifter.empty, 'empty')
-        assert.equal(shifter.peek(), null, 'peek')
+        okay(paired.queue === queue, 'sync paired queue')
+        okay(paired.shifter === shifter, 'sync paired shifter')
+        okay(shifter.empty, 'sync empty')
+        okay(shifter.peek(), null, 'sync peek')
         shifter.destroy()
-    })
-    it('can determine if a shifter is empty', async () => {
+    }
+    {
         const queue = new Avenue
         const shifter = queue.shifter()
         queue.shifter() // create an add shifter node to skip
-        assert(shifter.empty, 'is empty')
+        okay(shifter.empty, 'is empty')
         await queue.push(null)
-        assert(!shifter.empty, 'is empty')
+        okay(!shifter.empty, 'is empty after eos')
         shifter.destroy()
-        assert(shifter.empty, 'is empty')
-    })
-    it('can peek', async () => {
+        okay(shifter.empty, 'is empty after destroy')
+    }
+    {
         const queue = new Avenue
         const shifter = queue.shifter()
         queue.shifter() // create an add shifter node to skip
-        assert.equal(shifter.peek(), null, 'is empty')
+        okay(shifter.peek(), null, 'is empty before peek')
         await queue.push(1)
-        assert.equal(shifter.peek(), 1, 'peek')
+        okay(shifter.peek(), 1, 'peek')
         await shifter.shift()
         queue.shifter() // create an add shifter node to skip
         await queue.push(null)
-        assert.equal(shifter.peek(), null, 'peek end of queue')
+        okay(shifter.peek(), null, 'peek end of queue')
         shifter.destroy()
-        assert.equal(shifter.peek(), null, 'peek empty')
-    })
-    it('can construct a shifter from sync interface', async () => {
+        okay(shifter.peek(), null, 'peek empty')
+    }
+    {
         const queue = new Avenue
         const shifter = queue.sync.shifter()
         queue.push(null)
-        assert.equal(await shifter.shift(), null, 'end')
+        okay(await shifter.shift(), null, 'sync shifter async clone')
         shifter.destroy()
-    })
-    it('can pair a shifter with its queue', () => {
-        const paired = new Avenue().shifter().paired
-        assert(paired.queue != null, 'queue')
-        assert(paired.shifter != null, 'shifter')
-    })
-    it('can push a value', async () => {
+    }
+    {
+        const queue = new Avenue()
+        const shifter = queue.shifter()
+        const paired = shifter.paired
+        okay(paired.queue === queue, 'paired queue')
+        okay(paired.shifter === shifter, 'paired shifter')
+    }
+    {
         const queue = new Avenue
         const shifter = queue.shifter()
         queue.push(1)
-        assert.equal(await shifter.shift(), 1, 'shifted')
-        assert.equal(queue.size, 0, 'shifted size')
+        okay(await shifter.shift(), 1, 'async shifted')
+        okay(queue.size, 0, 'async shifted size')
         shifter.destroy()
-    })
-    it('a shifter will wait for a pushed value', async () => {
+    }
+    {
         const queue = new Avenue
         const shifter = queue.shifter()
         const promise = shifter.shift()
         queue.push(1)
-        assert.equal(await promise, 1, 'shifted')
-        assert.equal(queue.size, 0, 'shifted size')
+        okay(await promise, 1, 'awaited shifted')
+        okay(queue.size, 0, 'awaited shifted size')
         shifter.destroy()
-    })
-    it('can enqueue many values', async () => {
+    }
+    {
         const queue = new Avenue
         const shifter = queue.shifter()
         await queue.enqueue([ 1, 2, 3 ])
-        assert.deepStrictEqual(await shifter.splice(3), [ 1, 2, 3 ], 'sliced')
-        assert.equal(queue.size, 0, 'sliced size')
+        okay(await shifter.splice(3), [ 1, 2, 3 ], 'enqueue many sliced')
+        okay(queue.size, 0, 'enqueue many sliced size')
         shifter.destroy()
-    })
-    it('can destroy a shifter with items in queue', async () => {
+    }
+    {
         const queue = new Avenue
         const shifter = queue.shifter()
         await queue.enqueue([ 1, 2, 3 ])
-        assert.equal(queue.size, 3, 'enqueued size')
-        assert.equal(await shifter.shift(), 1, 'shifted')
-        assert.equal(queue.size, 2, 'shifted size')
+        okay(queue.size, 3, 'destroy with items in queue enqueued size')
+        okay(await shifter.shift(), 1, 'destroy with items in queue shifted')
+        okay(queue.size, 2, 'destroy with items in queue shifted size')
         shifter.destroy()
-        assert.equal(queue.shifters, 0, 'shifters remaining')
-    })
-    it('can destroy a shifter with other shifters outstanding', async () => {
+        okay(queue.shifters, 0, 'destroy with items in queue shifters remaining')
+    }
+    {
         const queue = new Avenue
         const first = queue.shifter()
         await queue.enqueue([ 1 ])
         const second = queue.shifter()
         await queue.enqueue([ 2, 3 ])
-        assert.equal(queue.size, 3, 'enqueued size')
-        assert.equal(await first.shift(), 1, 'first shifted')
-        assert.equal(queue.size, 2, 'shifted size')
-        assert.equal(await first.shift(), 2, 'first shifted again')
-        assert.equal(queue.size, 2, 'shifted size')
+        okay(queue.size, 3, 'destroy with outstanding shifters enqueued size')
+        okay(await first.shift(), 1, 'destroy with outstanding shifters first shifted')
+        okay(queue.size, 2, 'destroy with outstanding shifters shifted size')
+        okay(await first.shift(), 2, 'destroy with outstanding shifters first shifted again')
+        okay(queue.size, 2, 'destroy with outstanding shifters shifted again size')
         first.destroy()
-        assert.equal(queue.shifters, 1, 'shifters remaining')
-        assert.deepStrictEqual(await second.splice(3), [ 2, 3 ], 'sliced')
-        assert.equal(queue.size, 0, 'shifted size')
+        okay(queue.shifters, 1, 'destroy with outstanding shifters remaining')
+        okay(await second.splice(3), [ 2, 3 ], 'sliced')
+        okay(queue.size, 0, 'destroy with outstanding shifters shifted size')
         second.destroy()
-    })
-    it('can push back on splices until drained', async () => {
+    }
+    {
         const queue = new Avenue(3)
         const shifter = queue.shifter()
         const first = queue.enqueue([ 1, 2, 3, 4, 5 ])
         const second = queue.enqueue([ 1, 2, 3, 4, 5 ])
-        assert.deepStrictEqual(await shifter.splice(5), [ 1, 2, 3 ], 'first 3')
+        okay(await shifter.splice(5), [ 1, 2, 3 ], 'enqueue wait first 3')
         await first
-        assert.deepStrictEqual(await shifter.splice(5), [ 4, 5, 1 ], 'switching')
-        assert.deepStrictEqual(await shifter.splice(5), [ 2, 3, 4 ], 'remaining')
-        assert.deepStrictEqual(await shifter.splice(5), [ 5 ], 'remaining')
+        okay(await shifter.splice(5), [ 4, 5, 1 ], 'enqueue wait switching')
+        okay(await shifter.splice(5), [ 2, 3, 4 ], 'enqueue wait remaining')
+        okay(await shifter.splice(5), [ 5 ], 'enqueue wait last bit remaining')
         await second
-    })
-    it('can wait on splices until enqueued', async () => {
+    }
+    {
         const queue = new Avenue
         const shifter = queue.shifter()
         const splice = shifter.splice(3)
         await queue.enqueue([ 1, 2, 3, 4, 5 ])
-        assert.deepStrictEqual(await splice, [ 1, 2, 3 ], 'first 3')
+        okay(await splice, [ 1, 2, 3 ], 'splice wait first 3')
         shifter.destroy()
-    })
-    it('can end of stream', async () => {
+    }
+    {
         const queue = new Avenue
         const shifter = queue.shifter()
         await queue.enqueue([ 1, 2, 3, null ])
-        assert.deepStrictEqual(await shifter.splice(4), [ 1, 2, 3 ], 'eos')
-    })
-    it('can zip up wating entries when a laggard shifter is destroyed', () => {
+        okay(await shifter.splice(4), [ 1, 2, 3 ], 'eos')
+    }
+    {
         const queue = new Avenue().sync
         const laggard = queue.shifter().sync
         const shifter = queue.shifter().sync
         queue.enqueue([ 1, 2, 3 ])
-        assert.deepStrictEqual(shifter.splice(3), [ 1, 2, 3 ], 'spliced')
-        assert.equal(queue.size, 3, 'laggard holding entries')
+        okay(shifter.splice(3), [ 1, 2, 3 ], 'laggard spliced')
+        okay(queue.size, 3, 'laggard holding entries')
         laggard.destroy()
-        assert.equal(queue.size, 0, 'zipped')
-    })
-    it('shifter iterator is iterable', async () => {
+        okay(queue.size, 0, 'laggard zipped')
+    }
+    {
         const queue = new Avenue
         const shifter = queue.shifter()
         const entries = [ 1, 2, 3, null ]
         await queue.enqueue(entries)
         for await (const entry of shifter.iterator()) {
-            assert.equal(entry, entries.shift(), 'looped')
+            okay(entry, entries.shift(), 'async shift iterator looped')
         }
-        assert.deepStrictEqual(entries, [ null ], 'stopped before null')
-    })
-    it('shifter iterator is iterable by splice', async () => {
+        okay(entries, [ null ], 'async shift iterator stopped before null')
+    }
+    {
         const queue = new Avenue
         const shifter = queue.shifter()
         const entries = [ 1, 2, 3, 4, 5, 6, null ]
         await queue.enqueue(entries)
         for await (const splice of shifter.iterator(3)) {
-            assert.deepStrictEqual(splice, entries.splice(0, 3), 'looped')
+            okay(splice, entries.splice(0, 3), 'async splice looped')
         }
-        assert.deepStrictEqual(entries, [ null ], 'stopped before null')
-    })
-    it('can pump to a sync function', async () => {
+        okay(entries, [ null ], 'async splice stopped before null')
+    }
+    {
         const queue = new Avenue
         const shifter = queue.shifter()
         const entries = [ 1, 2, 3, null ]
         await queue.enqueue(entries)
-        await shifter.pump((entry) => assert.equal(entry, entries.shift()))
-        assert.deepStrictEqual(entries, [], 'stopped at null')
-    })
-    it('can pump to an async function', async () => {
+        await shifter.pump((entry) => okay(entry, entries.shift(), `pump sync ${entry}`))
+        okay(entries, [], 'pump sync stopped at null')
+    }
+    {
         const queue = new Avenue
         const shifter = queue.shifter()
         const entries = [ 1, 2, 3, null ]
         await queue.enqueue(entries)
-        await shifter.pump(async (entry) => assert.equal(entry, entries.shift()))
-        assert.deepStrictEqual(entries, [], 'stopped at null')
-    })
-    it('can pump splices to an sync function', async () => {
-        const queue = new Avenue
-        const shifter = queue.shifter()
-        const entries = [ 1, 2, 3, null ]
-        await queue.enqueue(entries)
-        entries.pop()
-        await shifter.pump(3, (got) => assert.deepStrictEqual(got, entries.splice(0, 3)))
-        assert.deepStrictEqual(entries, [], 'consumed all entries')
-    })
-    it('can pump splices to an async function', async () => {
+        await shifter.pump(async (entry) => okay(entry, entries.shift(), `pump async ${entry}`))
+        okay(entries, [], 'pump async stopped at null')
+    }
+    {
         const queue = new Avenue
         const shifter = queue.shifter()
         const entries = [ 1, 2, 3, null ]
         await queue.enqueue(entries)
         entries.pop()
-        await shifter.pump(3, async (got) => assert.deepStrictEqual(got, entries.splice(0, 3)))
-        assert.deepStrictEqual(entries, [], 'consumed all entries')
-    })
-    it('can shift synchronously', () => {
+        await shifter.pump(3, (got) => okay(got, entries.splice(0, 3), `pump sync ${JSON.stringify(got)}`))
+        okay(entries, [], 'pump sync consumed all entries')
+    }
+    {
+        const queue = new Avenue
+        const shifter = queue.shifter()
+        const entries = [ 1, 2, 3, null ]
+        await queue.enqueue(entries)
+        entries.pop()
+        await shifter.pump(3, async (got) => okay(got, entries.splice(0, 3), `pump async ${JSON.stringify(got)}`))
+        okay(entries, [], 'pump async consumed all entries')
+    }
+    {
         const queue = new Avenue
         const shifter = queue.shifter().sync
         queue.shifter().destroy()
         const other = queue.shifter().sync
         queue.sync.push(1)
-        assert.equal(shifter.shift(), 1, 'shift')
-        assert.equal(shifter.shift(), null, 'shift end of available')
-        assert.equal(queue.size, 1, 'queue has items')
-        assert.equal(other.shift(), 1, 'shift')
-        assert.equal(queue.size, 0, 'queue is empty')
+        okay(shifter.shift(), 1, 'sync shift')
+        okay(shifter.shift(), null, 'sync shift end of available')
+        okay(queue.size, 1, 'sync shift queue has items')
+        okay(other.shift(), 1, 'sync shift again ')
+        okay(queue.size, 0, 'sync shift queue is empty')
         other.destroy()
         queue.sync.push(null)
-        assert.equal(shifter.shift(), null, 'shift end of queue')
-        assert(shifter.destroyed, 'destroyed by end of queue')
-        assert.equal(shifter.shift(), null, 'shift after destroyed')
-    })
-    it('can splice synchronously', () => {
+        okay(shifter.shift(), null, 'sync shift shift end of queue')
+        okay(shifter.destroyed, 'sync shift destroyed by end of queue')
+        okay(shifter.shift(), null, 'sync shift shift after destroyed')
+    }
+    {
         const queue = new Avenue().sync
         const shifter = queue.shifter().sync
-        assert.deepStrictEqual(shifter.splice(1), [], 'empty')
+        okay(shifter.splice(1), [], 'sync splice empty')
         queue.enqueue([ 1, 2, 3 ])
-        assert.deepStrictEqual(shifter.splice(2), [ 1, 2 ], 'hit limit')
-        assert.deepStrictEqual(shifter.splice(2), [ 3 ], 'less than limit')
+        okay(shifter.splice(2), [ 1, 2 ], 'sync splice hit limit')
+        okay(shifter.splice(2), [ 3 ], 'sync splice less than limit')
         shifter.destroy()
-        assert.deepStrictEqual(shifter.splice(1), [], 'empty')
-    })
-    it('can shift iterate synchronously', () => {
+        okay(shifter.splice(1), [], 'sync splice empty again')
+    }
+    {
         const queue = new Avenue().sync
         const shifter = queue.shifter().sync
         queue.push(1)
@@ -244,9 +246,9 @@ describe('avenue', () => {
         for (let entry of shifter.iterator()) {
             entries.push(entry)
         }
-        assert.deepStrictEqual(entries, [ 1 ], 'sync iterate')
-    })
-    it('can splice iterate synchronously', () => {
+        okay(entries, [ 1 ], 'sync shift iterate')
+    }
+    {
         const queue = new Avenue().sync
         const shifter = queue.shifter().sync
         queue.enqueue([ 1, 2, 3 ])
@@ -254,20 +256,20 @@ describe('avenue', () => {
         for (let splice of shifter.iterator(2)) {
             entries.push(splice)
         }
-        assert.deepStrictEqual(entries, [ [ 1, 2 ], [ 3 ]  ], 'sync iterate')
-    })
-    it('can create a shifter from a shifter', () => {
+        okay(entries, [ [ 1, 2 ], [ 3 ]  ], 'sync splice iterate')
+    }
+    {
         const queue = new Avenue().sync
         const first = queue.shifter().sync
         const second = first.shifter().sync
         queue.enqueue([ 1, 2 ])
-        assert.deepStrictEqual(second.splice(2), [ 1, 2 ], 'advance one')
+        okay(second.splice(2), [ 1, 2 ], 'shifter from shifter advance one')
         const third = second.shifter().sync
         queue.push(3)
-        assert.equal(second.shift(), 3, 'move off from prototype')
-        assert.deepStrictEqual(first.splice(3), [ 1, 2, 3 ], 'advance past duplicate')
-        assert.equal(queue.size, 1, 'one remaining')
-        assert.equal(third.shift(), 3, 'move duplciate')
-        assert.equal(queue.size, 0, 'tidy')
-    })
+        okay(second.shift(), 3, 'shifter from shifter move off from prototype')
+        okay(first.splice(3), [ 1, 2, 3 ], 'shifter from shifter advance past duplicate')
+        okay(queue.size, 1, 'shifter from shifter one remaining')
+        okay(third.shift(), 3, 'shifter from shifter move duplciate')
+        okay(queue.size, 0, 'shifter from shifter tidy')
+    }
 })
