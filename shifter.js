@@ -183,7 +183,7 @@ class Shifter {
                     this._head = this._head.next
                 }
                 if (this._head.next == null) {
-                    this._head.next = {
+                    this.queue._head = this.queue._head.next = {
                         next: null,
                         value: null,
                         end: false,

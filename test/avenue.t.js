@@ -1,4 +1,4 @@
-require('proof')(91, async (okay) => {
+require('proof')(92, async (okay) => {
     const Avenue = require('../avenue')
     {
         const queue = new Avenue
@@ -271,5 +271,15 @@ require('proof')(91, async (okay) => {
         okay(queue.size, 1, 'shifter from shifter one remaining')
         okay(third.shift(), 3, 'shifter from shifter move duplciate')
         okay(queue.size, 0, 'shifter from shifter tidy')
+    }
+    {
+        const queue = new Avenue()
+        const first = queue.shifter()
+        const second = queue.shifter()
+        first.destroy()
+        const end = second.shift()
+        queue.push(null)
+        // https://github.com/bigeasy/avenue/issues/49
+        okay(await end, null, 'correctly append destruction to end of list')
     }
 })
