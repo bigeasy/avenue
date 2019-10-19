@@ -286,6 +286,15 @@ class Shifter {
             }
         }
     }
+
+    async join (f) {
+        for (;;) {
+            const entry = await this.shift()
+            if (entry == null || f(entry)) {
+                return entry
+            }
+        }
+    }
 }
 
 module.exports = Shifter

@@ -104,6 +104,13 @@ class Queue {
             }
         }
     }
+
+    async join (f) {
+        const shifter = this.shifter()
+        const entry = await shifter.join(f)
+        shifter.destroy()
+        return entry
+    }
 }
 
 module.exports = Queue

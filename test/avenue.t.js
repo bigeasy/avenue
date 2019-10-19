@@ -1,4 +1,4 @@
-require('proof')(92, async (okay) => {
+require('proof')(94, async (okay) => {
     const Queue = require('..')
     {
         const queue = new Queue
@@ -274,12 +274,28 @@ require('proof')(92, async (okay) => {
     }
     {
         const queue = new Queue()
+        const joined = queue.shifter().join(entry => entry == 2)
+        queue.push(1)
+        queue.push(2)
+        queue.push(null)
+        okay(await joined, 2, 'shifter joined')
+    }
+    {
+        const queue = new Queue()
+        const joined = queue.join(entry => entry == 2)
+        queue.push(1)
+        queue.push(2)
+        queue.push(null)
+        okay(await joined, 2, 'queue joined')
+    }
+    {
+        // https://github.com/bigeasy/avenue/issues/49
+        const queue = new Queue()
         const first = queue.shifter()
         const second = queue.shifter()
         first.destroy()
         const end = second.shift()
         queue.push(null)
-        // https://github.com/bigeasy/avenue/issues/49
         okay(await end, null, 'correctly append destruction to end of list')
     }
 })
