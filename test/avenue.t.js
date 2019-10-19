@@ -1,5 +1,5 @@
 require('proof')(92, async (okay) => {
-    const Queue = require('../avenue')
+    const Queue = require('..')
     {
         const queue = new Queue
         okay(queue.size, 0, 'constructed size')

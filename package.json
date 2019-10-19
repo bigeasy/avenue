@@ -26,7 +26,7 @@
                             "proof":                        "^8.0.0-alpha.1",
                             "staccato":                     "^11.0.0-alpha.1"
     },
-    "main":                 "avenue",
+    "main":                 "queue",
     "scripts":
     {
                             "test": "proof test/*.t.js"
