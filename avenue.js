@@ -40,7 +40,7 @@ class Sync {
     }
 }
 
-class Avenue {
+class Queue {
     constructor (max) {
         this.shifters = 0
         this.size = 0
@@ -106,4 +106,4 @@ class Avenue {
     }
 }
 
-module.exports = Avenue
+module.exports = Queue

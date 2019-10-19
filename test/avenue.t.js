@@ -1,26 +1,26 @@
 require('proof')(92, async (okay) => {
-    const Avenue = require('../avenue')
+    const Queue = require('../avenue')
     {
-        const queue = new Avenue
+        const queue = new Queue
         okay(queue.size, 0, 'constructed size')
         okay(queue.max, Infinity, 'constructed max')
     }
     {
-        const queue = new Avenue
+        const queue = new Queue
         queue.push(1)
         okay(queue.size, 0, 'no shfiters size before')
         await queue.enqueue([ 1 ])
         okay(queue.size, 0, 'no shifters size after')
     }
     {
-        const queue = new Avenue
+        const queue = new Queue
         const shifter = queue.shifter()
         shifter.destroy()
         shifter.destroy()
         okay(shifter.destroyed, 'destroyed before use')
     }
     {
-        const queue = new Avenue
+        const queue = new Queue
         const shifter = queue.shifter().sync
         okay(!shifter.destroyed, 'sync not destroyed')
         okay(shifter.queue === queue, 'sync queue')
@@ -32,7 +32,7 @@ require('proof')(92, async (okay) => {
         shifter.destroy()
     }
     {
-        const queue = new Avenue
+        const queue = new Queue
         const shifter = queue.shifter()
         queue.shifter() // create an add shifter node to skip
         okay(shifter.empty, 'is empty')
@@ -42,7 +42,7 @@ require('proof')(92, async (okay) => {
         okay(shifter.empty, 'is empty after destroy')
     }
     {
-        const queue = new Avenue
+        const queue = new Queue
         const shifter = queue.shifter()
         queue.shifter() // create an add shifter node to skip
         okay(shifter.peek(), null, 'is empty before peek')
@@ -56,21 +56,21 @@ require('proof')(92, async (okay) => {
         okay(shifter.peek(), null, 'peek empty')
     }
     {
-        const queue = new Avenue
+        const queue = new Queue
         const shifter = queue.sync.shifter()
         queue.push(null)
         okay(await shifter.shift(), null, 'sync shifter async clone')
         shifter.destroy()
     }
     {
-        const queue = new Avenue()
+        const queue = new Queue()
         const shifter = queue.shifter()
         const paired = shifter.paired
         okay(paired.queue === queue, 'paired queue')
         okay(paired.shifter === shifter, 'paired shifter')
     }
     {
-        const queue = new Avenue
+        const queue = new Queue
         const shifter = queue.shifter()
         queue.push(1)
         okay(await shifter.shift(), 1, 'async shifted')
@@ -78,7 +78,7 @@ require('proof')(92, async (okay) => {
         shifter.destroy()
     }
     {
-        const queue = new Avenue
+        const queue = new Queue
         const shifter = queue.shifter()
         const promise = shifter.shift()
         queue.push(1)
@@ -87,7 +87,7 @@ require('proof')(92, async (okay) => {
         shifter.destroy()
     }
     {
-        const queue = new Avenue
+        const queue = new Queue
         const shifter = queue.shifter()
         await queue.enqueue([ 1, 2, 3 ])
         okay(await shifter.splice(3), [ 1, 2, 3 ], 'enqueue many sliced')
@@ -95,7 +95,7 @@ require('proof')(92, async (okay) => {
         shifter.destroy()
     }
     {
-        const queue = new Avenue
+        const queue = new Queue
         const shifter = queue.shifter()
         await queue.enqueue([ 1, 2, 3 ])
         okay(queue.size, 3, 'destroy with items in queue enqueued size')
@@ -105,7 +105,7 @@ require('proof')(92, async (okay) => {
         okay(queue.shifters, 0, 'destroy with items in queue shifters remaining')
     }
     {
-        const queue = new Avenue
+        const queue = new Queue
         const first = queue.shifter()
         await queue.enqueue([ 1 ])
         const second = queue.shifter()
@@ -122,7 +122,7 @@ require('proof')(92, async (okay) => {
         second.destroy()
     }
     {
-        const queue = new Avenue(3)
+        const queue = new Queue(3)
         const shifter = queue.shifter()
         const first = queue.enqueue([ 1, 2, 3, 4, 5 ])
         const second = queue.enqueue([ 1, 2, 3, 4, 5 ])
@@ -134,7 +134,7 @@ require('proof')(92, async (okay) => {
         await second
     }
     {
-        const queue = new Avenue
+        const queue = new Queue
         const shifter = queue.shifter()
         const splice = shifter.splice(3)
         await queue.enqueue([ 1, 2, 3, 4, 5 ])
@@ -142,13 +142,13 @@ require('proof')(92, async (okay) => {
         shifter.destroy()
     }
     {
-        const queue = new Avenue
+        const queue = new Queue
         const shifter = queue.shifter()
         await queue.enqueue([ 1, 2, 3, null ])
         okay(await shifter.splice(4), [ 1, 2, 3 ], 'eos')
     }
     {
-        const queue = new Avenue().sync
+        const queue = new Queue().sync
         const laggard = queue.shifter().sync
         const shifter = queue.shifter().sync
         queue.enqueue([ 1, 2, 3 ])
@@ -158,7 +158,7 @@ require('proof')(92, async (okay) => {
         okay(queue.size, 0, 'laggard zipped')
     }
     {
-        const queue = new Avenue
+        const queue = new Queue
         const shifter = queue.shifter()
         const entries = [ 1, 2, 3, null ]
         await queue.enqueue(entries)
@@ -168,7 +168,7 @@ require('proof')(92, async (okay) => {
         okay(entries, [ null ], 'async shift iterator stopped before null')
     }
     {
-        const queue = new Avenue
+        const queue = new Queue
         const shifter = queue.shifter()
         const entries = [ 1, 2, 3, 4, 5, 6, null ]
         await queue.enqueue(entries)
@@ -178,7 +178,7 @@ require('proof')(92, async (okay) => {
         okay(entries, [ null ], 'async splice stopped before null')
     }
     {
-        const queue = new Avenue
+        const queue = new Queue
         const shifter = queue.shifter()
         const entries = [ 1, 2, 3, null ]
         await queue.enqueue(entries)
@@ -186,7 +186,7 @@ require('proof')(92, async (okay) => {
         okay(entries, [], 'pump sync stopped at null')
     }
     {
-        const queue = new Avenue
+        const queue = new Queue
         const shifter = queue.shifter()
         const entries = [ 1, 2, 3, null ]
         await queue.enqueue(entries)
@@ -194,7 +194,7 @@ require('proof')(92, async (okay) => {
         okay(entries, [], 'pump async stopped at null')
     }
     {
-        const queue = new Avenue
+        const queue = new Queue
         const shifter = queue.shifter()
         const entries = [ 1, 2, 3, null ]
         await queue.enqueue(entries)
@@ -203,7 +203,7 @@ require('proof')(92, async (okay) => {
         okay(entries, [], 'pump sync consumed all entries')
     }
     {
-        const queue = new Avenue
+        const queue = new Queue
         const shifter = queue.shifter()
         const entries = [ 1, 2, 3, null ]
         await queue.enqueue(entries)
@@ -212,7 +212,7 @@ require('proof')(92, async (okay) => {
         okay(entries, [], 'pump async consumed all entries')
     }
     {
-        const queue = new Avenue
+        const queue = new Queue
         const shifter = queue.shifter().sync
         queue.shifter().destroy()
         const other = queue.shifter().sync
@@ -229,7 +229,7 @@ require('proof')(92, async (okay) => {
         okay(shifter.shift(), null, 'sync shift shift after destroyed')
     }
     {
-        const queue = new Avenue().sync
+        const queue = new Queue().sync
         const shifter = queue.shifter().sync
         okay(shifter.splice(1), [], 'sync splice empty')
         queue.enqueue([ 1, 2, 3 ])
@@ -239,7 +239,7 @@ require('proof')(92, async (okay) => {
         okay(shifter.splice(1), [], 'sync splice empty again')
     }
     {
-        const queue = new Avenue().sync
+        const queue = new Queue().sync
         const shifter = queue.shifter().sync
         queue.push(1)
         const entries = []
@@ -249,7 +249,7 @@ require('proof')(92, async (okay) => {
         okay(entries, [ 1 ], 'sync shift iterate')
     }
     {
-        const queue = new Avenue().sync
+        const queue = new Queue().sync
         const shifter = queue.shifter().sync
         queue.enqueue([ 1, 2, 3 ])
         const entries = []
@@ -259,7 +259,7 @@ require('proof')(92, async (okay) => {
         okay(entries, [ [ 1, 2 ], [ 3 ]  ], 'sync splice iterate')
     }
     {
-        const queue = new Avenue().sync
+        const queue = new Queue().sync
         const first = queue.shifter().sync
         const second = first.shifter().sync
         queue.enqueue([ 1, 2 ])
@@ -273,7 +273,7 @@ require('proof')(92, async (okay) => {
         okay(queue.size, 0, 'shifter from shifter tidy')
     }
     {
-        const queue = new Avenue()
+        const queue = new Queue()
         const first = queue.shifter()
         const second = queue.shifter()
         first.destroy()
