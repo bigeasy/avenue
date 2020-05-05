@@ -23,7 +23,7 @@
     },
     "devDependencies":
     {
-                            "proof":                        "^8.0.0-alpha.1",
+                            "proof":                        "^9.0.1",
                             "staccato":                     "^11.0.0-alpha.1"
     },
     "main":                 "queue",
