@@ -122,8 +122,8 @@ require('proof')(94, async (okay) => {
         second.destroy()
     }
     {
-        const queue = new Queue(3)
-        const shifter = queue.shifter()
+        const queue = new Queue(3).async
+        const shifter = queue.shifter().async
         const first = queue.enqueue([ 1, 2, 3, 4, 5 ])
         const second = queue.enqueue([ 1, 2, 3, 4, 5 ])
         okay(await shifter.splice(5), [ 1, 2, 3 ], 'enqueue wait first 3')
@@ -148,9 +148,10 @@ require('proof')(94, async (okay) => {
         okay(await shifter.splice(4), [ 1, 2, 3 ], 'eos')
     }
     {
-        const queue = new Queue().sync
-        const laggard = queue.shifter().sync
-        const shifter = queue.shifter().sync
+        const queue = new Queue().sync.sync
+        const laggard = queue.shifter()
+        const shifter = queue.shifter()
+        console.log(shifter)
         queue.enqueue([ 1, 2, 3 ])
         okay(shifter.splice(3), [ 1, 2, 3 ], 'laggard spliced')
         okay(queue.size, 3, 'laggard holding entries')

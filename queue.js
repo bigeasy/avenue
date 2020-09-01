@@ -5,12 +5,16 @@ class Sync {
         this.async = queue
     }
 
+    get sync () {
+        return this
+    }
+
     get size () {
         return this.async.size
     }
 
     shifter () {
-        return this.async.shifter()
+        return this.async.shifter().sync
     }
 
     // Do not awake until all values are enqueued.
@@ -49,6 +53,10 @@ class Queue {
         this._shifting = []
         this._enqueuing = []
         this.sync = new Sync(this)
+    }
+
+    get async () {
+        return this
     }
 
     shifter () {

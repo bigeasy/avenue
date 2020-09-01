@@ -21,6 +21,10 @@ class Sync {
         return this.async.empty
     }
 
+    get sync () {
+        return this
+    }
+
     shifter () {
         return this.async.shifter()
     }
@@ -144,6 +148,10 @@ class Shifter {
             iterator = iterator.next
         }
         return true
+    }
+
+    get async () {
+        return this
     }
 
     shifter () {
