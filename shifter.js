@@ -88,33 +88,22 @@ class Sync {
         return entries
     }
 
-    iterator (count) {
+    *iterator (count) {
         if (count == null) {
-            return {
-                [Symbol.iterator]: () => {
-                    return {
-                        next: () => {
-                            const entry = this.shift()
-                            if (entry == null) {
-                                return { done: true }
-                            }
-                            return { done: false, value: entry }
-                        }
-                    }
+            for (;;) {
+                const entry = this.shift()
+                if (entry == null) {
+                    break
                 }
+                yield entry
             }
-        }
-        return {
-            [Symbol.iterator]: () => {
-                return {
-                    next: () => {
-                        const entries = this.splice(count)
-                        if (entries.length == 0) {
-                            return { done: true }
-                        }
-                        return { done: false, value: entries }
-                    }
+        } else {
+            for (;;) {
+                const entries = this.splice(count)
+                if (entries.length == 0) {
+                    break
                 }
+                yield entries
             }
         }
     }
@@ -240,33 +229,22 @@ class Shifter {
         }
     }
 
-    iterator (count) {
+    async *iterator (count) {
         if (count == null) {
-            return {
-                [Symbol.asyncIterator]: () => {
-                    return {
-                        next: async () => {
-                            const value = await this.shift()
-                            if (value == null) {
-                                return { done: true }
-                            }
-                            return { value: value, done: false }
-                        }
-                    }
+            for (;;) {
+                const entry = await this.shift()
+                if (entry == null) {
+                    break
                 }
+                yield entry
             }
-        }
-        return {
-            [Symbol.asyncIterator]: () => {
-                return {
-                    next: async () => {
-                        const value = await this.splice(count)
-                        if (value.length == 0) {
-                            return { done: true }
-                        }
-                        return { value: value, done: false }
-                    }
+        } else {
+            for (;;) {
+                const entries = await this.splice(count)
+                if (entries.length == 0) {
+                    break
                 }
+                yield entries
             }
         }
     }

@@ -164,6 +164,7 @@ require('proof')(94, async (okay) => {
         const entries = [ 1, 2, 3, null ]
         await queue.enqueue(entries)
         for await (const entry of shifter.iterator()) {
+            console.log('entry >>>', entry)
             okay(entry, entries.shift(), 'async shift iterator looped')
         }
         okay(entries, [ null ], 'async shift iterator stopped before null')
