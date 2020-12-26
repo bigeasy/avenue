@@ -107,6 +107,10 @@ class Sync {
             }
         }
     }
+
+    [Symbol.iterator] () {
+        return this.iterator()
+    }
 }
 
 class Shifter {
@@ -271,6 +275,10 @@ class Shifter {
                 }
             }
         }
+    }
+
+    [Symbol.asyncIterator] () {
+        return this.iterator()
     }
 
     async join (f) {

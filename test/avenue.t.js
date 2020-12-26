@@ -164,7 +164,16 @@ require('proof')(94, async (okay) => {
         const entries = [ 1, 2, 3, null ]
         await queue.enqueue(entries)
         for await (const entry of shifter.iterator()) {
-            console.log('entry >>>', entry)
+            okay(entry, entries.shift(), 'async shift iterator looped')
+        }
+        okay(entries, [ null ], 'async shift iterator stopped before null')
+    }
+    {
+        const queue = new Queue
+        const shifter = queue.shifter()
+        const entries = [ 1, 2, 3, null ]
+        await queue.enqueue(entries)
+        for await (const entry of shifter) {
             okay(entry, entries.shift(), 'async shift iterator looped')
         }
         okay(entries, [ null ], 'async shift iterator stopped before null')
@@ -245,7 +254,17 @@ require('proof')(94, async (okay) => {
         const shifter = queue.shifter().sync
         queue.push(1)
         const entries = []
-        for (let entry of shifter.iterator()) {
+        for (const entry of shifter.iterator()) {
+            entries.push(entry)
+        }
+        okay(entries, [ 1 ], 'sync shift iterate')
+    }
+    {
+        const queue = new Queue().sync
+        const shifter = queue.shifter().sync
+        queue.push(1)
+        const entries = []
+        for (const entry of shifter) {
             entries.push(entry)
         }
         okay(entries, [ 1 ], 'sync shift iterate')
@@ -255,7 +274,7 @@ require('proof')(94, async (okay) => {
         const shifter = queue.shifter().sync
         queue.enqueue([ 1, 2, 3 ])
         const entries = []
-        for (let splice of shifter.iterator(2)) {
+        for (const splice of shifter.iterator(2)) {
             entries.push(splice)
         }
         okay(entries, [ [ 1, 2 ], [ 3 ]  ], 'sync splice iterate')
