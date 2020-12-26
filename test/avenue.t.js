@@ -1,4 +1,4 @@
-require('proof')(94, async (okay) => {
+require('proof')(99, async (okay) => {
     const Queue = require('..')
     {
         const queue = new Queue
