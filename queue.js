@@ -43,6 +43,18 @@ class Sync {
         }
         this.async._resolve()
     }
+
+    consume (iterable, arrayed = false) {
+        if (arrayed) {
+            for (const entries of iterable) {
+                this.enqueue(entries)
+            }
+        } else {
+            for (const entry of iterable) {
+                this.push(entry)
+            }
+        }
+    }
 }
 
 class Queue {
@@ -121,6 +133,18 @@ class Queue {
         const entry = await shifter.join(f)
         shifter.destroy()
         return entry
+    }
+
+    async consume (iterable, arrayed = false) {
+        if (arrayed) {
+            for await (const entries of iterable) {
+                await this.enqueue(entries)
+            }
+        } else {
+            for await (const entry of iterable) {
+                await this.push(entry)
+            }
+        }
     }
 }
 

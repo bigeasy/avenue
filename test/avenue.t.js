@@ -1,4 +1,4 @@
-require('proof')(103, async (okay) => {
+require('proof')(107, async (okay) => {
     const Queue = require('..')
     {
         const queue = new Queue
@@ -327,5 +327,29 @@ require('proof')(103, async (okay) => {
         okay(await shifter.shift(), 5, 'got pushed value')
         okay(queue.size, 3, 'size updated after shift')
         okay(await shifter.shift(), 3, 'got pushed value')
+    }
+    {
+        const queue = new Queue
+        const shifter = queue.shifter().sync
+        await queue.consume([ 1, 2, 3 ])
+        okay(shifter.splice(4), [ 1, 2, 3 ], 'consume push async')
+    }
+    {
+        const queue = new Queue
+        const shifter = queue.shifter().sync
+        await queue.consume([[ 1, 2 ], [ 3 ]], true)
+        okay(shifter.splice(4), [ 1, 2, 3 ], 'consume enqueue async')
+    }
+    {
+        const queue = new Queue().sync
+        const shifter = queue.shifter()
+        queue.consume([ 1, 2, 3 ])
+        okay(shifter.splice(4), [ 1, 2, 3 ], 'consume push async')
+    }
+    {
+        const queue = new Queue().sync
+        const shifter = queue.shifter().sync
+        queue.consume([[ 1, 2 ], [ 3 ]], true)
+        okay(shifter.splice(4), [ 1, 2, 3 ], 'consume enqueue async')
     }
 })
