@@ -1,3 +1,5 @@
+'use strict'
+
 const Shifter = require('./shifter')
 
 class Sync {

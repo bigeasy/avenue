@@ -1,3 +1,5 @@
+'use strict'
+
 require('proof')(107, async (okay) => {
     const Queue = require('..')
     {

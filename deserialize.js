@@ -1,3 +1,5 @@
+'use strict'
+
 const assert = require('assert')
 
 module.exports = async function (readable, queue) {

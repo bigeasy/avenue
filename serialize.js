@@ -1,3 +1,5 @@
+'use strict'
+
 const EMPTY = Buffer.alloc(0)
 
 module.exports = async function (shifter, writable, splice) {

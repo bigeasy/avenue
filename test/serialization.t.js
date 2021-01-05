@@ -1,3 +1,5 @@
+'use strict'
+
 require('proof')(5, async (okay) => {
     const Serialize = require('../serialize')
     const Deserialize = require('../deserialize')
