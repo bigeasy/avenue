@@ -1,4 +1,4 @@
-require('proof')(99, async (okay) => {
+require('proof')(103, async (okay) => {
     const Queue = require('..')
     {
         const queue = new Queue
@@ -151,7 +151,6 @@ require('proof')(99, async (okay) => {
         const queue = new Queue().sync.sync
         const laggard = queue.shifter()
         const shifter = queue.shifter()
-        console.log(shifter)
         queue.enqueue([ 1, 2, 3 ])
         okay(shifter.splice(3), [ 1, 2, 3 ], 'laggard spliced')
         okay(queue.size, 3, 'laggard holding entries')
@@ -318,5 +317,15 @@ require('proof')(99, async (okay) => {
         const end = second.shift()
         queue.push(null)
         okay(await end, null, 'correctly append destruction to end of list')
+    }
+    {
+        const queue = new Queue(7, value => value)
+        const shifter = queue.shifter()
+        const promise = queue.enqueue([ 5, 3 ])
+        await null
+        okay(queue.size, 5, 'size is based on value')
+        okay(await shifter.shift(), 5, 'got pushed value')
+        okay(queue.size, 3, 'size updated after shift')
+        okay(await shifter.shift(), 3, 'got pushed value')
     }
 })

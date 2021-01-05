@@ -50,7 +50,7 @@ class Sync {
             }
             if (entry.value != null) {
                 if (entry.count == shifter._shifters) {
-                    this.async.queue.size--
+                    this.async.queue.size -= entry.heft
                     if (twist) {
                         this.async.queue._twist()
                     }
@@ -177,7 +177,7 @@ class Shifter {
                     if (this._head.next.value == null) {
                         this._head.next.count++
                     } else if (this._head.next.count == this.queue.shifters) {
-                        this.queue.size--
+                        this.queue.size -= this._head.next.heft
                     } else {
                         break
                     }
@@ -253,6 +253,7 @@ class Shifter {
         }
     }
 
+    // **TODO** queue.consume (iterator) instead of pump.
     async pump (...vargs) {
         const f = vargs.pop()
         const count = vargs.pop()

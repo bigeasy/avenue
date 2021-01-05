@@ -18,11 +18,12 @@ class Sync {
     }
 
     // Do not awake until all values are enqueued.
-    _push (value) {
+    _push (value, heft) {
         const queue = this.async
-        queue.size++
+        queue.size += heft
         queue._head = queue._head.next = {
             next: null,
+            heft: heft,
             value: value,
             end: value == null,
             count: 0,
@@ -32,23 +33,26 @@ class Sync {
     }
 
     push (value) {
-        this._push(value)
+        this._push(value, 1)
         this.async._resolve()
     }
 
     enqueue (values) {
         for (let value of values) {
-            this._push(value)
+            this._push(value, 1)
         }
         this.async._resolve()
     }
 }
 
 class Queue {
-    constructor (max) {
+    static heft = Symbol('heft')
+
+    constructor (max = Infinity, heftify = null) {
         this.shifters = 0
         this.size = 0
-        this.max = max || Infinity
+        this.max = max
+        this.heftify = heftify
         this._head = { next: null }
         this._shifting = []
         this._enqueuing = []
@@ -74,7 +78,7 @@ class Queue {
 
     _resolve () {
         if (this._shifting.length != 0) {
-            for (let resolve of this._shifting.splice(0)) {
+            for (const resolve of this._shifting.splice(0)) {
                 resolve.call()
             }
         }
@@ -94,17 +98,16 @@ class Queue {
 
     async enqueue (values) {
         if (this.shifters != 0) {
-            if (values.length + this.size < this.max) {
+            if (this.heftify == null && values.length + this.size < this.max) {
                 this.sync.enqueue(values)
             } else {
-                const remaining = values.slice()
-                while (remaining.length != 0) {
-                    let length = Math.min(this.max - this.size, remaining.length)
-                    if (length <= 0) {
+                for (const value of values) {
+                    const heft = this.heftify == null ? 1 : (this.heftify)(value)
+                    while (this.size + heft > this.max) {
                         await new Promise(resolve => this._enqueuing.push(resolve))
-                        length = Math.min(this.max - this.size, remaining.length)
                     }
-                    this.sync.enqueue(remaining.splice(0, length))
+                    this.sync._push(value, heft)
+                    this._resolve()
                 }
                 if (this._enqueuing.length != 0 && this.size < this.max) {
                     this._enqueuing.shift().call()
