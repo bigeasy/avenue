@@ -1,6 +1,6 @@
 'use strict'
 
-require('proof')(107, async (okay) => {
+require('proof')(108, async (okay) => {
     const Queue = require('..')
     {
         const queue = new Queue
@@ -65,7 +65,7 @@ require('proof')(107, async (okay) => {
         shifter.destroy()
     }
     {
-        const queue = new Queue()
+        const queue = new Queue
         const shifter = queue.shifter()
         const paired = shifter.paired
         okay(paired.queue === queue, 'paired queue')
@@ -124,7 +124,7 @@ require('proof')(107, async (okay) => {
         second.destroy()
     }
     {
-        const queue = new Queue(3).async
+        const queue = new Queue({ size: 3 }).async
         const shifter = queue.shifter().async
         const first = queue.enqueue([ 1, 2, 3, 4, 5 ])
         const second = queue.enqueue([ 1, 2, 3, 4, 5 ])
@@ -321,7 +321,7 @@ require('proof')(107, async (okay) => {
         okay(await end, null, 'correctly append destruction to end of list')
     }
     {
-        const queue = new Queue(7, value => value)
+        const queue = new Queue({ size: 7, heftify: value => value })
         const shifter = queue.shifter()
         const promise = queue.enqueue([ 5, 3 ])
         await null
@@ -353,5 +353,11 @@ require('proof')(107, async (okay) => {
         const shifter = queue.shifter().sync
         queue.consume([[ 1, 2 ], [ 3 ]], true)
         okay(shifter.splice(4), [ 1, 2, 3 ], 'consume enqueue async')
+    }
+    {
+        const queue = new Queue({ transform: value => value + 1 }).sync
+        const shifter = queue.shifter().sync
+        queue.consume([[ 1, 2 ], [ 3 ]], true)
+        okay(shifter.splice(4), [ 2, 3, 4 ], 'transform')
     }
 })
