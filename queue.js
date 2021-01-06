@@ -104,10 +104,26 @@ class Queue {
         }
     }
 
-    async push (value) {
+    push (value) {
         if (this.shifters != 0) {
-            await this.enqueue([ value ])
+            const heft = this.heftify == null ? 1 : (this.heftify)(value)
+            if (this.size + heft > this.max) {
+                return (async () => {
+                    while (this.size + heft > this.max) {
+                        await new Promise(resolve => this._enqueuing.push(resolve))
+                    }
+                    this.sync._push(value, heft)
+                    this._resolve()
+                    if (this._enqueuing.length != 0 && this.size < this.max) {
+                        this._enqueuing.shift().call()
+                    }
+                }) ()
+            }
+            this.sync._push(value, heft)
+            this._resolve()
+            return null
         }
+        return null
     }
 
     async enqueue (values) {
@@ -116,15 +132,10 @@ class Queue {
                 this.sync.enqueue(values)
             } else {
                 for (const value of values) {
-                    const heft = this.heftify == null ? 1 : (this.heftify)(value)
-                    while (this.size + heft > this.max) {
-                        await new Promise(resolve => this._enqueuing.push(resolve))
+                    const promise = this.push(value)
+                    if (promise != null) {
+                        await promise
                     }
-                    this.sync._push(value, heft)
-                    this._resolve()
-                }
-                if (this._enqueuing.length != 0 && this.size < this.max) {
-                    this._enqueuing.shift().call()
                 }
             }
         }
