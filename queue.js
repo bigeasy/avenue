@@ -2,6 +2,8 @@
 
 const Shifter = require('./shifter')
 
+const consume = require('./consume')
+
 class Sync {
     constructor (queue) {
         this.async = queue
@@ -47,21 +49,11 @@ class Sync {
     }
 
     consume (iterable, arrayed = false) {
-        if (arrayed) {
-            for (const entries of iterable) {
-                this.enqueue(entries)
-            }
-        } else {
-            for (const entry of iterable) {
-                this.push(entry)
-            }
-        }
+        consume.sync(this, iterable, arrayed)
     }
 }
 
 class Queue {
-    static heft = Symbol('heft')
-
     constructor (max = Infinity, heftify = null) {
         this.shifters = 0
         this.size = 0
@@ -149,15 +141,7 @@ class Queue {
     }
 
     async consume (iterable, arrayed = false) {
-        if (arrayed) {
-            for await (const entries of iterable) {
-                await this.enqueue(entries)
-            }
-        } else {
-            for await (const entry of iterable) {
-                await this.push(entry)
-            }
-        }
+        return consume.async(this, iterable, arrayed)
     }
 }
 

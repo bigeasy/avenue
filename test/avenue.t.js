@@ -1,6 +1,6 @@
 'use strict'
 
-require('proof')(107, async (okay) => {
+require('proof')(111, async (okay) => {
     const Queue = require('..')
     {
         const queue = new Queue
@@ -331,16 +331,44 @@ require('proof')(107, async (okay) => {
         okay(await shifter.shift(), 3, 'got pushed value')
     }
     {
-        const queue = new Queue
+        const queue = new Queue(2)
         const shifter = queue.shifter().sync
-        await queue.consume([ 1, 2, 3 ])
-        okay(shifter.splice(4), [ 1, 2, 3 ], 'consume push async')
+        const promise = queue.consume([ 1, 2, 3 ])
+        okay(await shifter.splice(4), [ 1, 2 ], 'sync consume push async first')
+        okay(await shifter.splice(4), [ 3 ], 'sync consume push async second')
+        await promise
     }
     {
-        const queue = new Queue
+        const queue = new Queue(2)
         const shifter = queue.shifter().sync
-        await queue.consume([[ 1, 2 ], [ 3 ]], true)
-        okay(shifter.splice(4), [ 1, 2, 3 ], 'consume enqueue async')
+        const promise = queue.consume([[ 1, 2 ], [ 3 ]], true)
+        okay(await shifter.splice(4), [ 1, 2 ], 'sync consume enqueue async first')
+        okay(await shifter.splice(4), [ 3 ], 'sync consume enqueue async second')
+        await promise
+    }
+    {
+        const queue = new Queue(2)
+        const shifter = queue.shifter()
+        const promise = queue.consume(async function* () {
+            for (const number of [ 1, 2, 3 ]) {
+                yield number
+            }
+        } ())
+        await new Promise(resolve => setImmediate(resolve))
+        okay([ await shifter.shift(), await shifter.shift(), await shifter.shift() ], [ 1, 2, 3 ], 'async consume push async')
+        await promise
+    }
+    {
+        const queue = new Queue(2)
+        const shifter = queue.shifter()
+        const promise = queue.consume(async function* () {
+            for (const array of [[ 1, 2 ], [ 3 ]]) {
+                yield array
+            }
+        } (), true)
+        await new Promise(resolve => setImmediate(resolve))
+        okay([ await shifter.shift(), await shifter.shift(), await shifter.shift() ], [ 1, 2, 3 ], 'async consume enqueue async')
+        await promise
     }
     {
         const queue = new Queue().sync
