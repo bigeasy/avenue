@@ -20,14 +20,14 @@ class Sync {
     }
 
     // Do not awake until all values are enqueued.
-    _push (entry) {
+    _push (value, heft) {
         const queue = this.async
-        queue.size += entry.heft
+        queue.size += heft
         queue._head = queue._head.next = {
             next: null,
-            heft: entry.heft,
-            value: entry.value,
-            end: entry.value == null,
+            heft: heft,
+            value: value,
+            end: value == null,
             count: 0,
             shifters: 0,
             unshifters: 0
@@ -35,13 +35,13 @@ class Sync {
     }
 
     push (value) {
-        this._push(this.async._entry(value))
+        this._push(value, 1)
         this.async._resolve()
     }
 
     enqueue (values) {
         for (let value of values) {
-            this._push(this.async._entry(value))
+            this._push(value, 1)
         }
         this.async._resolve()
     }
@@ -62,12 +62,11 @@ class Sync {
 class Queue {
     static heft = Symbol('heft')
 
-    constructor ({ size = Infinity, transform = null, heftify = null } = {}) {
+    constructor (max = Infinity, heftify = null) {
         this.shifters = 0
         this.size = 0
-        this.max = size
+        this.max = max
         this.heftify = heftify
-        this._transform = transform
         this._head = { next: null }
         this._shifting = []
         this._enqueuing = []
@@ -111,23 +110,17 @@ class Queue {
         }
     }
 
-    _entry (submitted) {
-        const value = this._transform == null ? submitted : this._transform.call(null, submitted)
-        const heft = this.heftify == null ? 1 : this.heftify.call(null, value)
-        return { value, heft }
-    }
-
     async enqueue (values) {
         if (this.shifters != 0) {
             if (this.heftify == null && values.length + this.size < this.max) {
                 this.sync.enqueue(values)
             } else {
                 for (const value of values) {
-                    const entry = this._entry(value)
-                    while (this.size + entry.heft > this.max) {
+                    const heft = this.heftify == null ? 1 : (this.heftify)(value)
+                    while (this.size + heft > this.max) {
                         await new Promise(resolve => this._enqueuing.push(resolve))
                     }
-                    this.sync._push(entry)
+                    this.sync._push(value, heft)
                     this._resolve()
                 }
                 if (this._enqueuing.length != 0 && this.size < this.max) {
