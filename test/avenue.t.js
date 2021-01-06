@@ -126,13 +126,13 @@ require('proof')(107, async (okay) => {
     {
         const queue = new Queue(3).async
         const shifter = queue.shifter().async
-        const first = queue.enqueue([ 1, 2, 3, 4, 5 ])
-        const second = queue.enqueue([ 1, 2, 3, 4, 5 ])
-        okay(await shifter.splice(5), [ 1, 2, 3 ], 'enqueue wait first 3')
+        const first = queue.enqueue([ 0, 2, 4, 6, 8 ])
+        const second = queue.enqueue([ 1, 3, 5, 7, 9 ])
+        okay(await shifter.splice(5), [ 0, 2, 4 ], 'enqueue wait first 3')
         await first
-        okay(await shifter.splice(5), [ 4, 5, 1 ], 'enqueue wait switching')
-        okay(await shifter.splice(5), [ 2, 3, 4 ], 'enqueue wait remaining')
-        okay(await shifter.splice(5), [ 5 ], 'enqueue wait last bit remaining')
+        okay(await shifter.splice(5), [ 6, 1, 8 ], 'enqueue wait switching')
+        okay(await shifter.splice(5), [ 3 ], 'enqueue wait remaining')
+        okay(await shifter.splice(5), [ 5, 7, 9 ], 'enqueue wait last bit remaining')
         await second
     }
     {
