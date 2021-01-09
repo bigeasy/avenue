@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>shifter.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page_wrapper">
+            <div id="jump_page">
+
+
+                <a class="source" href="consume.js.html">
+                  consume.js
+                </a>
+
+
+                <a class="source" href="deserialize.js.html">
+                  deserialize.js
+                </a>
+
+
+                <a class="source" href="notes.js.html">
+                  notes.js
+                </a>
+
+
+                <a class="source" href="queue.js.html">
+                  queue.js
+                </a>
+
+
+                <a class="source" href="serialize.js.html">
+                  serialize.js
+                </a>
+
+
+                <a class="source" href="shifter.js.html">
+                  shifter.js
+                </a>
+
+
+                <a class="source" href="symbol.js.html">
+                  symbol.js
+                </a>
+
+
+                <a class="source" href="transformer.js.html">
+                  transformer.js
+                </a>
+
+            </div>
+          </div>
+        </li>
+      </ul>
+
+    <ul class="sections">
+
+          <li id="title">
+              <div class="annotation">
+                  <h1>shifter.js</h1>
+              </div>
+          </li>
+
+
+
+        <li id="section-1">
+            <div class="annotation">
+
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+
+            </div>
+
+            <div class="content"><div class='highlight'><pre><span class="hljs-meta">&#x27;use strict&#x27;</span>
+
+<span class="hljs-keyword">const</span> assert = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;assert&#x27;</span>)
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Sync</span> </span>{
+    <span class="hljs-title">constructor</span> (<span class="hljs-params">shifter</span>) {
+        <span class="hljs-built_in">this</span>.async = shifter
+    }
+
+    get queue () {
+        <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>.async.queue
+    }
+
+    get destroyed () {
+        <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>.async.destroyed
+    }
+
+    get paired () {
+        <span class="hljs-keyword">return</span> { <span class="hljs-attr">queue</span>: <span class="hljs-built_in">this</span>.async.queue, <span class="hljs-attr">shifter</span>: <span class="hljs-built_in">this</span> }
+    }
+
+    get empty () {
+        <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>.async.empty
+    }
+
+    get sync () {
+        <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>
+    }
+
+    shifter () {
+        <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>.async.shifter()
+    }
+
+    peek () {
+        <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>.async.peek()
+    }
+
+    destroy () {
+        <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>.async.destroy()
+    }
+
+    _shift (twist) {
+        <span class="hljs-keyword">const</span> shifter = <span class="hljs-built_in">this</span>.async
+        <span class="hljs-keyword">while</span> (shifter._head.next != <span class="hljs-literal">null</span>) {
+            <span class="hljs-keyword">const</span> entry = shifter._head = shifter._head.next
+            entry.count++
+            <span class="hljs-keyword">if</span> (entry.shifters != <span class="hljs-number">0</span>) {
+                shifter._shifters += entry.shifters
+            }
+            <span class="hljs-keyword">if</span> (entry.unshifters != <span class="hljs-number">0</span>) {
+                shifter._shifters -= entry.unshifters
+            }
+            <span class="hljs-keyword">if</span> (entry.value != <span class="hljs-literal">null</span>) {
+                <span class="hljs-keyword">if</span> (entry.count == shifter._shifters) {
+                    <span class="hljs-built_in">this</span>.async.queue.size -= entry.heft
+                    <span class="hljs-keyword">if</span> (twist) {
+                        <span class="hljs-built_in">this</span>.async.queue._twist()
+                    }
+                }
+                <span class="hljs-keyword">return</span> entry.value
+            } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (entry.end) {
+                <span class="hljs-built_in">this</span>.async.destroyed = <span class="hljs-literal">true</span>
+                <span class="hljs-built_in">this</span>.async.queue.shifters--
+                <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>
+            }
+        }
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>
+    }
+
+    shift () {
+        <span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.async.destroyed) {
+            <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>
+        }
+        <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>._shift(<span class="hljs-literal">true</span>)
+    }
+
+    splice (count) {
+        <span class="hljs-keyword">const</span> entries = []
+        <span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.async.destroyed) {
+            <span class="hljs-keyword">return</span> entries
+        }
+        <span class="hljs-keyword">while</span> (entries.length &lt; count) {
+            <span class="hljs-keyword">const</span> entry = <span class="hljs-built_in">this</span>._shift(<span class="hljs-literal">false</span>)
+            <span class="hljs-keyword">if</span> (entry == <span class="hljs-literal">null</span>) {
+                <span class="hljs-keyword">break</span>
+            }
+            entries.push(entry)
+        }
+        <span class="hljs-built_in">this</span>.async.queue._twist()
+        <span class="hljs-keyword">return</span> entries
+    }
+
+    _push (f) {
+        <span class="hljs-keyword">for</span> (;;) {
+            <span class="hljs-keyword">const</span> value = <span class="hljs-built_in">this</span>.shift()
+            <span class="hljs-keyword">if</span> (value == <span class="hljs-literal">null</span>) {
+                <span class="hljs-built_in">this</span>.queue._shifting.push(<span class="hljs-function">() =&gt;</span> <span class="hljs-built_in">this</span>._push(f))
+                <span class="hljs-keyword">break</span>
+            }
+            f(value)
+        }
+    }
+
+    push (f) {
+        <span class="hljs-built_in">this</span>._push(f)
+    }
+
+    *iterator (count) {
+        <span class="hljs-keyword">if</span> (count == <span class="hljs-literal">null</span>) {
+            <span class="hljs-keyword">for</span> (;;) {
+                <span class="hljs-keyword">const</span> entry = <span class="hljs-built_in">this</span>.shift()
+                <span class="hljs-keyword">if</span> (entry == <span class="hljs-literal">null</span>) {
+                    <span class="hljs-keyword">break</span>
+                }
+                <span class="hljs-keyword">yield</span> entry
+            }
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">for</span> (;;) {
+                <span class="hljs-keyword">const</span> entries = <span class="hljs-built_in">this</span>.splice(count)
+                <span class="hljs-keyword">if</span> (entries.length == <span class="hljs-number">0</span>) {
+                    <span class="hljs-keyword">break</span>
+                }
+                <span class="hljs-keyword">yield</span> entries
+            }
+        }
+    }
+
+    [<span class="hljs-built_in">Symbol</span>.iterator] () {
+        <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>.iterator()
+    }
+}
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Shifter</span> </span>{
+    <span class="hljs-title">constructor</span> (<span class="hljs-params">queue, head</span>) {
+        <span class="hljs-built_in">this</span>.queue = queue</pre></div></div>
+
+        </li>
+
+
+        <li id="section-2">
+            <div class="annotation">
+
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p><strong>TODO</strong> Maybe call this <code>terminated</code>?</p>
+
+            </div>
+
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-built_in">this</span>.destroyed = <span class="hljs-literal">false</span>
+        <span class="hljs-built_in">this</span>._head = head
+        <span class="hljs-built_in">this</span>._resolve = <span class="hljs-function">() =&gt;</span> {}
+        <span class="hljs-built_in">this</span>._shifters = queue.shifters
+        <span class="hljs-built_in">this</span>.sync = <span class="hljs-keyword">new</span> Sync(<span class="hljs-built_in">this</span>)</pre></div></div>
+
+        </li>
+
+
+        <li id="section-3">
+            <div class="annotation">
+
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p><strong>TODO</strong> Doesn’t work. We have to get to the end.</p>
+
+            </div>
+
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-built_in">this</span>.end = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-params">resolve</span> =&gt;</span> <span class="hljs-built_in">this</span>._end = resolve)
+    }
+
+    get paired () {
+        <span class="hljs-keyword">return</span> { <span class="hljs-attr">queue</span>: <span class="hljs-built_in">this</span>.queue, <span class="hljs-attr">shifter</span>: <span class="hljs-built_in">this</span> }
+    }
+
+    get empty () {
+        <span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.destroyed) {
+            <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>
+        }
+        <span class="hljs-keyword">let</span> iterator = <span class="hljs-built_in">this</span>._head.next
+        <span class="hljs-keyword">while</span> (iterator != <span class="hljs-literal">null</span>) {
+            <span class="hljs-keyword">if</span> (iterator.value != <span class="hljs-literal">null</span> || iterator.end) {
+                <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>
+            }
+            iterator = iterator.next
+        }
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>
+    }
+
+    get <span class="hljs-keyword">async</span> () {
+        <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>
+    }
+
+    shifter () {
+        <span class="hljs-built_in">this</span>._head.shifters++
+        <span class="hljs-built_in">this</span>.queue.shifters++
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Shifter(<span class="hljs-built_in">this</span>.queue, <span class="hljs-built_in">this</span>._head)
+    }
+
+    peek () {
+        <span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.destroyed) {
+            <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>
+        }
+        <span class="hljs-keyword">let</span> iterator = <span class="hljs-built_in">this</span>._head.next
+        <span class="hljs-keyword">while</span> (iterator != <span class="hljs-literal">null</span>) {
+            <span class="hljs-keyword">if</span> (iterator.value != <span class="hljs-literal">null</span> || iterator.end) {
+                <span class="hljs-keyword">return</span> iterator.value == <span class="hljs-literal">null</span> ? <span class="hljs-literal">null</span> : iterator.value
+            }
+            iterator = iterator.next
+        }
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>
+    }
+
+    destroy () {
+        <span class="hljs-keyword">if</span> (!<span class="hljs-built_in">this</span>.destroyed) {
+            <span class="hljs-built_in">this</span>.queue.shifters--
+            <span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.queue.shifters == <span class="hljs-number">0</span>) {
+                <span class="hljs-built_in">this</span>.queue.size = <span class="hljs-number">0</span>
+            } <span class="hljs-keyword">else</span> {
+                <span class="hljs-keyword">while</span> (<span class="hljs-built_in">this</span>._head.next != <span class="hljs-literal">null</span>) {
+                    <span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>._head.next.value == <span class="hljs-literal">null</span>) {
+                        <span class="hljs-built_in">this</span>._head.next.count++
+                    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>._head.next.count == <span class="hljs-built_in">this</span>.queue.shifters) {
+                        <span class="hljs-built_in">this</span>.queue.size -= <span class="hljs-built_in">this</span>._head.next.heft
+                    } <span class="hljs-keyword">else</span> {
+                        <span class="hljs-keyword">break</span>
+                    }
+                    <span class="hljs-built_in">this</span>._head = <span class="hljs-built_in">this</span>._head.next
+                }
+                <span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>._head.next == <span class="hljs-literal">null</span>) {
+                    <span class="hljs-built_in">this</span>.queue._head = <span class="hljs-built_in">this</span>.queue._head.next = {
+                        <span class="hljs-attr">next</span>: <span class="hljs-literal">null</span>,
+                        <span class="hljs-attr">value</span>: <span class="hljs-literal">null</span>,
+                        <span class="hljs-attr">end</span>: <span class="hljs-literal">false</span>,
+                        <span class="hljs-attr">count</span>: <span class="hljs-number">0</span>,
+                        <span class="hljs-attr">shifters</span>: <span class="hljs-number">0</span>,
+                        <span class="hljs-attr">unshifters</span>: <span class="hljs-number">1</span>
+                    }
+                } <span class="hljs-keyword">else</span> {
+                    <span class="hljs-built_in">this</span>._head.next.unshifters++
+                }
+            }
+            <span class="hljs-built_in">this</span>.queue._twist()
+            <span class="hljs-built_in">this</span>.destroyed = <span class="hljs-literal">true</span>
+            <span class="hljs-built_in">this</span>._resolve.call()
+            <span class="hljs-built_in">this</span>._end.call()
+        }
+    }
+
+    <span class="hljs-keyword">async</span> shift () {
+        <span class="hljs-keyword">for</span> (;;) {
+            <span class="hljs-keyword">const</span> entry = <span class="hljs-built_in">this</span>.sync._shift(<span class="hljs-literal">true</span>)
+            <span class="hljs-keyword">if</span> (entry != <span class="hljs-literal">null</span> || <span class="hljs-built_in">this</span>.destroyed) {
+                <span class="hljs-keyword">return</span> entry
+            }
+            <span class="hljs-keyword">await</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-params">resolve</span> =&gt;</span> <span class="hljs-built_in">this</span>.queue._shifting.push(<span class="hljs-built_in">this</span>._resolve = resolve))
+        }
+    }
+
+    <span class="hljs-keyword">async</span> splice (count) {
+        <span class="hljs-keyword">const</span> entries = []
+        <span class="hljs-keyword">for</span> (;;) {
+            <span class="hljs-keyword">if</span> (count == entries.length) {
+                <span class="hljs-built_in">this</span>.queue._twist()
+                <span class="hljs-keyword">return</span> entries
+            }
+            <span class="hljs-keyword">const</span> entry = <span class="hljs-built_in">this</span>.sync._shift(<span class="hljs-literal">false</span>)
+            <span class="hljs-keyword">if</span> (entry == <span class="hljs-literal">null</span>) {
+                <span class="hljs-keyword">if</span> (entries.length != <span class="hljs-number">0</span> || <span class="hljs-built_in">this</span>.destroyed) {
+                    <span class="hljs-built_in">this</span>.queue._twist()
+                    <span class="hljs-keyword">return</span> entries
+                }
+                <span class="hljs-keyword">await</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-params">resolve</span> =&gt;</span> <span class="hljs-built_in">this</span>.queue._shifting.push(<span class="hljs-built_in">this</span>._resolve = resolve))
+            } <span class="hljs-keyword">else</span> {
+                entries.push(entry)
+            }
+        }
+    }
+
+    <span class="hljs-keyword">async</span> *iterator (count) {
+        <span class="hljs-keyword">if</span> (count == <span class="hljs-literal">null</span>) {
+            <span class="hljs-keyword">for</span> (;;) {
+                <span class="hljs-keyword">const</span> entry = <span class="hljs-keyword">await</span> <span class="hljs-built_in">this</span>.shift()
+                <span class="hljs-keyword">if</span> (entry == <span class="hljs-literal">null</span>) {
+                    <span class="hljs-keyword">break</span>
+                }
+                <span class="hljs-keyword">yield</span> entry
+            }
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">for</span> (;;) {
+                <span class="hljs-keyword">const</span> entries = <span class="hljs-keyword">await</span> <span class="hljs-built_in">this</span>.splice(count)
+                <span class="hljs-keyword">if</span> (entries.length == <span class="hljs-number">0</span>) {
+                    <span class="hljs-keyword">break</span>
+                }
+                <span class="hljs-keyword">yield</span> entries
+            }
+        }
+    }
+
+    <span class="hljs-keyword">async</span> push (...vargs) {
+        <span class="hljs-keyword">const</span> f = vargs.pop()
+        <span class="hljs-keyword">const</span> count = vargs.pop()
+        <span class="hljs-keyword">if</span> (count == <span class="hljs-literal">null</span>) {
+            <span class="hljs-keyword">for</span> (;;) {
+                <span class="hljs-keyword">const</span> entries = <span class="hljs-keyword">await</span> <span class="hljs-built_in">this</span>.splice(<span class="hljs-number">1</span>)
+                <span class="hljs-keyword">if</span> (entries.length == <span class="hljs-number">0</span>) {
+                    <span class="hljs-keyword">await</span> f(<span class="hljs-literal">null</span>)
+                    <span class="hljs-keyword">break</span>
+                } <span class="hljs-keyword">else</span> {
+                    <span class="hljs-keyword">await</span> f(entries.shift())
+                }
+            }
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">for</span> (;;) {
+                <span class="hljs-keyword">const</span> entries = <span class="hljs-keyword">await</span> <span class="hljs-built_in">this</span>.splice(count)
+                <span class="hljs-keyword">await</span> f(entries)
+                <span class="hljs-keyword">if</span> (entries.length == <span class="hljs-number">0</span>) {
+                    <span class="hljs-keyword">break</span>
+                }
+            }
+        }
+    }
+
+    [<span class="hljs-built_in">Symbol</span>.asyncIterator] () {
+        <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>.iterator()
+    }
+
+    <span class="hljs-keyword">async</span> join (f) {
+        <span class="hljs-keyword">for</span> (;;) {
+            <span class="hljs-keyword">const</span> entry = <span class="hljs-keyword">await</span> <span class="hljs-built_in">this</span>.shift()
+            <span class="hljs-keyword">if</span> (entry == <span class="hljs-literal">null</span> || f(entry)) {
+                <span class="hljs-keyword">return</span> entry
+            }
+        }
+    }
+}
+
+<span class="hljs-built_in">module</span>.exports = Shifter</pre></div></div>
+
+        </li>
+
+    </ul>
+  </div>
+</body>
+</html>

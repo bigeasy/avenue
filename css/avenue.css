@@ -7,10 +7,8 @@
   position: relative;
   -webkit-box-sizing: border-box;
   /* border-box is new to me, AG */
-
   -moz-box-sizing: border-box;
   /* https://pinboard.in/u:alan/t:border/t:box */
-
   box-sizing: border-box;
 }
 .grid {
@@ -22,7 +20,6 @@
   *zoom: 1;
   vertical-align: top;
   /* Clearfix */
-
   overflow: hidden;
   *overflow: visible;
 }
@@ -33,10 +30,10 @@
   width: 50%;
 }
 .one-of-three {
-  width: 33.333333333%;
+  width: 33.33333333%;
 }
 .two-of-three {
-  width: 66.666666666%;
+  width: 66.66666667%;
 }
 .one-of-four {
   width: 25%;
@@ -81,7 +78,6 @@ img {
 .unit.welcome h1 {
   font-family: "ABeeZee", "Georgia", sans-serif;
   /*font-size: 48pt;*/
-
   font-weight: normal;
   font-size: 72pt;
   margin-top: 0.5em;
@@ -103,7 +99,6 @@ img {
   font-size: 1.45em;
   margin: 1em 0;
   /* todo: not working in chrome */
-
   font-weight: 100;
 }
 .unit.description p strong {
@@ -141,7 +136,7 @@ img {
 }
 .unit.benefit {
   padding: 1em;
-  width: 33.333333333%;
+  width: 33.33333333%;
 }
 .unit.benefit h2 {
   text-align: center;
@@ -175,7 +170,6 @@ img {
         font-family: @code-font, 'Monaco', 'Cutive Mono', 'Oxygen Mono', monospace;
     }
     */
-
 }
 .unit.sidebar {
   width: 25%;

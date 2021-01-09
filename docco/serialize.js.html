@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>serialize.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page_wrapper">
+            <div id="jump_page">
+
+
+                <a class="source" href="consume.js.html">
+                  consume.js
+                </a>
+
+
+                <a class="source" href="deserialize.js.html">
+                  deserialize.js
+                </a>
+
+
+                <a class="source" href="notes.js.html">
+                  notes.js
+                </a>
+
+
+                <a class="source" href="queue.js.html">
+                  queue.js
+                </a>
+
+
+                <a class="source" href="serialize.js.html">
+                  serialize.js
+                </a>
+
+
+                <a class="source" href="shifter.js.html">
+                  shifter.js
+                </a>
+
+
+                <a class="source" href="symbol.js.html">
+                  symbol.js
+                </a>
+
+
+                <a class="source" href="transformer.js.html">
+                  transformer.js
+                </a>
+
+            </div>
+          </div>
+        </li>
+      </ul>
+
+    <ul class="sections">
+
+          <li id="title">
+              <div class="annotation">
+                  <h1>serialize.js</h1>
+              </div>
+          </li>
+
+
+
+        <li id="section-1">
+            <div class="annotation">
+
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+
+            </div>
+
+            <div class="content"><div class='highlight'><pre><span class="hljs-meta">&#x27;use strict&#x27;</span>
+
+<span class="hljs-keyword">const</span> EMPTY = Buffer.alloc(<span class="hljs-number">0</span>)
+
+<span class="hljs-built_in">module</span>.exports = <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">shifter, writable, splice</span>) </span>{
+    <span class="hljs-keyword">let</span> series = <span class="hljs-number">0xffff</span>
+    <span class="hljs-keyword">for</span> <span class="hljs-keyword">await</span> (<span class="hljs-keyword">const</span> objects <span class="hljs-keyword">of</span> shifter.iterator(splice || <span class="hljs-number">64</span>)) {
+        <span class="hljs-keyword">const</span> write = []
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> object <span class="hljs-keyword">of</span> objects) {
+            <span class="hljs-keyword">let</span> buffer = EMPTY, length = <span class="hljs-literal">null</span>, json = { <span class="hljs-attr">body</span>: object }, iterator = json
+            <span class="hljs-keyword">for</span> (;;) {
+                <span class="hljs-keyword">if</span> (iterator == <span class="hljs-literal">null</span> || <span class="hljs-keyword">typeof</span> iterator !== <span class="hljs-string">&#x27;object&#x27;</span>) {
+                    <span class="hljs-keyword">break</span>
+                }
+                <span class="hljs-keyword">if</span> (iterator.body == <span class="hljs-literal">null</span>) {
+                    <span class="hljs-keyword">break</span>
+                }
+                <span class="hljs-keyword">if</span> (Buffer.isBuffer(iterator.body)) {
+                    buffer = iterator.body
+                    length = buffer.length
+                    iterator.body = <span class="hljs-literal">null</span>
+                    <span class="hljs-keyword">break</span>
+                }
+                iterator = iterator.body
+            }
+            write.push(Buffer.from(<span class="hljs-built_in">JSON</span>.stringify({
+                <span class="hljs-attr">series</span>: series = series + <span class="hljs-number">1</span> &amp; <span class="hljs-number">0xffff</span>,
+                <span class="hljs-attr">length</span>: length,
+                <span class="hljs-attr">body</span>: json.body
+            }) + <span class="hljs-string">&#x27;\n&#x27;</span>), buffer)
+        }
+        <span class="hljs-keyword">if</span> (! <span class="hljs-keyword">await</span> writable.write(write)) {
+            <span class="hljs-keyword">break</span>
+        }
+    }
+    writable.end()
+}</pre></div></div>
+
+        </li>
+
+    </ul>
+  </div>
+</body>
+</html>

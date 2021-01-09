@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>symbol.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page_wrapper">
+            <div id="jump_page">
+
+
+                <a class="source" href="consume.js.html">
+                  consume.js
+                </a>
+
+
+                <a class="source" href="deserialize.js.html">
+                  deserialize.js
+                </a>
+
+
+                <a class="source" href="notes.js.html">
+                  notes.js
+                </a>
+
+
+                <a class="source" href="queue.js.html">
+                  queue.js
+                </a>
+
+
+                <a class="source" href="serialize.js.html">
+                  serialize.js
+                </a>
+
+
+                <a class="source" href="shifter.js.html">
+                  shifter.js
+                </a>
+
+
+                <a class="source" href="symbol.js.html">
+                  symbol.js
+                </a>
+
+
+                <a class="source" href="transformer.js.html">
+                  transformer.js
+                </a>
+
+            </div>
+          </div>
+        </li>
+      </ul>
+
+    <ul class="sections">
+
+          <li id="title">
+              <div class="annotation">
+                  <h1>symbol.js</h1>
+              </div>
+          </li>
+
+
+
+        <li id="section-1">
+            <div class="annotation">
+
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+
+            </div>
+
+            <div class="content"><div class='highlight'><pre><span class="hljs-built_in">console</span>.log(<span class="hljs-string">&#x27;hello&#x27;</span>)
+
+<span class="hljs-keyword">const</span> heft = <span class="hljs-built_in">Symbol</span>(<span class="hljs-string">&#x27;heft&#x27;</span>)
+
+<span class="hljs-keyword">const</span> object = {
+    [heft]: <span class="hljs-number">1</span>,
+    <span class="hljs-attr">a</span>: <span class="hljs-number">1</span>
+}
+
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> key <span class="hljs-keyword">in</span> object) {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&#x27;&gt;&gt;&gt;&#x27;</span>, key)
+}
+
+<span class="hljs-built_in">console</span>.log(object.hasOwnProperty(heft))
+<span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">Object</span>.getOwnPropertyNames(object))
+<span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">Object</span>.getOwnPropertySymbols(object))
+
+<span class="hljs-built_in">console</span>.log(object)
+
+<span class="hljs-keyword">const</span> a = <span class="hljs-literal">null</span> ?? <span class="hljs-number">1</span>
+
+<span class="hljs-built_in">console</span>.log(a)</pre></div></div>
+
+        </li>
+
+    </ul>
+  </div>
+</body>
+</html>

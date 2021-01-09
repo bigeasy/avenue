@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>consume.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page_wrapper">
+            <div id="jump_page">
+
+
+                <a class="source" href="consume.js.html">
+                  consume.js
+                </a>
+
+
+                <a class="source" href="deserialize.js.html">
+                  deserialize.js
+                </a>
+
+
+                <a class="source" href="notes.js.html">
+                  notes.js
+                </a>
+
+
+                <a class="source" href="queue.js.html">
+                  queue.js
+                </a>
+
+
+                <a class="source" href="serialize.js.html">
+                  serialize.js
+                </a>
+
+
+                <a class="source" href="shifter.js.html">
+                  shifter.js
+                </a>
+
+
+                <a class="source" href="symbol.js.html">
+                  symbol.js
+                </a>
+
+
+                <a class="source" href="transformer.js.html">
+                  transformer.js
+                </a>
+
+            </div>
+          </div>
+        </li>
+      </ul>
+
+    <ul class="sections">
+
+          <li id="title">
+              <div class="annotation">
+                  <h1>consume.js</h1>
+              </div>
+          </li>
+
+
+
+        <li id="section-1">
+            <div class="annotation">
+
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+
+            </div>
+
+            <div class="content"><div class='highlight'><pre><span class="hljs-meta">&#x27;use strict&#x27;</span>
+
+<span class="hljs-built_in">exports</span>.sync = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">queue, iterable, arrayed</span>) </span>{
+    <span class="hljs-keyword">if</span> (arrayed) {
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> entries <span class="hljs-keyword">of</span> iterable) {
+            queue.enqueue(entries)
+        }
+    } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> entry <span class="hljs-keyword">of</span> iterable) {
+            queue.push(entry)
+        }
+    }
+}
+
+<span class="hljs-built_in">exports</span>.async = <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">queue, iterable, arrayed</span>) </span>{
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> iterable[<span class="hljs-built_in">Symbol</span>.asyncIterator] == <span class="hljs-string">&#x27;function&#x27;</span>) {
+        <span class="hljs-keyword">if</span> (arrayed) {
+            <span class="hljs-keyword">for</span> <span class="hljs-keyword">await</span> (<span class="hljs-keyword">const</span> entries <span class="hljs-keyword">of</span> iterable) {
+                <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> entry <span class="hljs-keyword">of</span> entries) {
+                    <span class="hljs-keyword">const</span> promise = queue.push(entry)
+                    <span class="hljs-keyword">if</span> (promise != <span class="hljs-literal">null</span>) {
+                        <span class="hljs-keyword">await</span> promise
+                    }
+                }
+            }
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">for</span> <span class="hljs-keyword">await</span> (<span class="hljs-keyword">const</span> entry <span class="hljs-keyword">of</span> iterable) {
+                <span class="hljs-keyword">const</span> promise = queue.push(entry)
+                <span class="hljs-keyword">if</span> (promise != <span class="hljs-literal">null</span>) {
+                    <span class="hljs-keyword">await</span> promise
+                }
+            }
+        }
+    } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">if</span> (arrayed) {
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> entries <span class="hljs-keyword">of</span> iterable) {
+                <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> entry <span class="hljs-keyword">of</span> entries) {
+                    <span class="hljs-keyword">const</span> promise = queue.push(entry)
+                    <span class="hljs-keyword">if</span> (promise != <span class="hljs-literal">null</span>) {
+                        <span class="hljs-keyword">await</span> promise
+                    }
+                }
+            }
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> entry <span class="hljs-keyword">of</span> iterable) {
+                <span class="hljs-keyword">const</span> promise = queue.push(entry)
+                <span class="hljs-keyword">if</span> (promise != <span class="hljs-literal">null</span>) {
+                    <span class="hljs-keyword">await</span> promise
+                }
+            }
+        }
+    }
+}</pre></div></div>
+
+        </li>
+
+    </ul>
+  </div>
+</body>
+</html>
