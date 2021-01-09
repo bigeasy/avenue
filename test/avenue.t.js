@@ -195,25 +195,16 @@ require('proof')(113, async (okay) => {
         const shifter = queue.shifter()
         const entries = [ 1, 2, 3, null ]
         await queue.enqueue(entries)
-        await shifter.pump((entry) => okay(entry, entries.shift(), `pump sync ${entry}`))
-        okay(entries, [], 'pump sync stopped at null')
+        await shifter.push((entry) => okay(entry, entries.shift(), `push sync ${entry}`))
+        okay(entries, [], 'push sync stopped at null')
     }
     {
         const queue = new Queue
         const shifter = queue.shifter()
         const entries = [ 1, 2, 3, null ]
         await queue.enqueue(entries)
-        await shifter.pump(async (entry) => okay(entry, entries.shift(), `pump async ${entry}`))
-        okay(entries, [], 'pump async stopped at null')
-    }
-    {
-        const queue = new Queue
-        const shifter = queue.shifter()
-        const entries = [ 1, 2, 3, null ]
-        await queue.enqueue(entries)
-        entries.pop()
-        await shifter.pump(3, (got) => okay(got, entries.splice(0, 3), `pump sync ${JSON.stringify(got)}`))
-        okay(entries, [], 'pump sync consumed all entries')
+        await shifter.push(async (entry) => okay(entry, entries.shift(), `push async ${entry}`))
+        okay(entries, [], 'push async stopped at null')
     }
     {
         const queue = new Queue
@@ -221,8 +212,17 @@ require('proof')(113, async (okay) => {
         const entries = [ 1, 2, 3, null ]
         await queue.enqueue(entries)
         entries.pop()
-        await shifter.pump(3, async (got) => okay(got, entries.splice(0, 3), `pump async ${JSON.stringify(got)}`))
-        okay(entries, [], 'pump async consumed all entries')
+        await shifter.push(3, (got) => okay(got, entries.splice(0, 3), `push sync ${JSON.stringify(got)}`))
+        okay(entries, [], 'push sync consumed all entries')
+    }
+    {
+        const queue = new Queue
+        const shifter = queue.shifter()
+        const entries = [ 1, 2, 3, null ]
+        await queue.enqueue(entries)
+        entries.pop()
+        await shifter.push(3, async (got) => okay(got, entries.splice(0, 3), `push async ${JSON.stringify(got)}`))
+        okay(entries, [], 'push async consumed all entries')
     }
     {
         const queue = new Queue

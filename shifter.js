@@ -271,8 +271,7 @@ class Shifter {
         }
     }
 
-    // **TODO** queue.consume (iterator) instead of pump.
-    async pump (...vargs) {
+    async push (...vargs) {
         const f = vargs.pop()
         const count = vargs.pop()
         if (count == null) {
