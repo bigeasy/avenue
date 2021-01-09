@@ -14,7 +14,9 @@ An async/await event queue.
 | Coverage:     | https://codecov.io/gh/bigeasy/avenue          |
 | License:      | MIT                                           |
 
+
 ```text
+//{ "mode": "text" }
 npm install avenue
 ```
 
@@ -50,7 +52,10 @@ use the Proof `okay` function to assert out statements in the readme. A Proof
 unit test generally looks like this.
 
 ```javascript
-require('proof')(4, async okay => {
+//{ "code": { "tests": 8 }, "text": { "tests": 4  } }
+require('proof')(%(tests)d, async okay => {
+    //{ "include": "testRequire" }
+    //{ "include": "test" }
     okay('always okay')
     okay(true, 'okay if true')
     okay(1, 1, 'okay if equal')
@@ -58,38 +63,50 @@ require('proof')(4, async okay => {
 })
 
 ```
-
 What would literate programming look like with Markdown as the base? Would
 Markdown be the right language?
 
 ```javascript
+//{ "name": "displayedRequire", "mode": "text" }
 const Queue = require('avenue')
+```
+
+```javascript
+//{ "name": "testRequire", "mode": "code" }
+const Queue = require('..')
 ```
 
 If you want to stream a shifter into a queue with back-pressure you can the
 `Shifter.async.push()` method.
 
+
 ```javascript
-const from = new Queue
-const to = new Queue
-const shifter = to.shifter()
-const promise = from.shifter().pump(value => to.push(value))
-await from.enqueue([ 1, 2, 3, null ])
-await promise
-okay(shifter.sync.splice(4), [ 1, 2, 3 ], 'pushed')
-okay(shifter.destroyed, 'pumped received terminator')
+//{ "unblock": true, "name": "test" }
+{
+    const from = new Queue
+    const to = new Queue
+    const shifter = to.shifter()
+    const promise = from.shifter().pump(value => to.push(value))
+    await from.enqueue([ 1, 2, 3, null ])
+    await promise
+    okay(shifter.sync.splice(4), [ 1, 2, 3 ], 'pushed')
+    okay(shifter.destroyed, 'pumped received terminator')
+}
 ```
 
 If you want to stream a shifter into a queue without terminating the queue you
 use `Queue.consume`.
 
 ```javascript
-const from = new Queue
-const to = new Queue
-const shifter = to.shifter()
-const promise = to.consume(from.shifter())
-await from.enqueue([ 1, 2, 3, null ])
-await promise
-okay(shifter.sync.splice(4), [ 1, 2, 3 ], 'pushed')
-okay(!shifter.destroyed, 'consumed did not receive terminator')
+//{ "unblock": true, "name": "test" }
+{
+    const from = new Queue
+    const to = new Queue
+    const shifter = to.shifter()
+    const promise = to.consume(from.shifter())
+    await from.enqueue([ 1, 2, 3, null ])
+    await promise
+    okay(shifter.sync.splice(4), [ 1, 2, 3 ], 'pushed')
+    okay(!shifter.destroyed, 'consumed did not receive terminator')
+}
 ```

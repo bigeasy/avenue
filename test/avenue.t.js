@@ -1,6 +1,6 @@
 'use strict'
 
-require('proof')(111, async (okay) => {
+require('proof')(113, async (okay) => {
     const Queue = require('..')
     {
         const queue = new Queue
@@ -9,7 +9,7 @@ require('proof')(111, async (okay) => {
     }
     {
         const queue = new Queue
-        queue.push(1)
+        await queue.push(1)
         okay(queue.size, 0, 'no shfiters size before')
         await queue.enqueue([ 1 ])
         okay(queue.size, 0, 'no shifters size after')
@@ -20,6 +20,7 @@ require('proof')(111, async (okay) => {
         shifter.destroy()
         shifter.destroy()
         okay(shifter.destroyed, 'destroyed before use')
+        okay(await shifter.shift(), null, 'destroyed before use null')
     }
     {
         const queue = new Queue
@@ -381,5 +382,13 @@ require('proof')(111, async (okay) => {
         const shifter = queue.shifter().sync
         queue.consume([[ 1, 2 ], [ 3 ]], true)
         okay(shifter.splice(4), [ 1, 2, 3 ], 'consume enqueue async')
+    }
+    {
+        const queue = new Queue().sync
+        const shifter = queue.shifter()
+        const gathered = []
+        shifter.push(value => gathered.push(value))
+        queue.enqueue([ 1, 2, 3 ])
+        okay(gathered, [ 1, 2, 3 ], 'enqueue')
     }
 })

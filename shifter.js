@@ -90,6 +90,21 @@ class Sync {
         return entries
     }
 
+    _push (f) {
+        for (;;) {
+            const value = this.shift()
+            if (value == null) {
+                this.queue._shifting.push(() => this._push(f))
+                break
+            }
+            f(value)
+        }
+    }
+
+    push (f) {
+        this._push(f)
+    }
+
     *iterator (count) {
         if (count == null) {
             for (;;) {
@@ -118,6 +133,7 @@ class Sync {
 class Shifter {
     constructor (queue, head) {
         this.queue = queue
+        // **TODO** Maybe call this `terminated`?
         this.destroyed = false
         this._head = head
         this._resolve = () => {}
