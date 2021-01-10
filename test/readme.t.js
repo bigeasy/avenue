@@ -55,7 +55,7 @@ require('proof')(8, async okay => {
         const from = new Queue
         const to = new Queue
         const shifter = to.shifter()
-        const promise = from.shifter().pump(value => to.push(value))
+        const promise = from.shifter().push(value => to.push(value))
         await from.enqueue([ 1, 2, 3, null ])
         await promise
         okay(shifter.sync.splice(4), [ 1, 2, 3 ], 'pushed')
