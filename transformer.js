@@ -44,12 +44,13 @@ class Transformer {
     }
 
     push (value) {
-        return this._decorated.push(value == null ? null : (this._transform)(value))
+        return this._decorated.push((this._transform)(value))
     }
 
     async enqueue (values) {
         for (const value of values) {
-            const promise = this._decorated.push(value == null ? null : (this._transform)(value))
+            console.log("value >>>", value)
+            const promise = this._decorated.push((this._transform)(value))
             if (promise != null) {
                 await promise
             }
