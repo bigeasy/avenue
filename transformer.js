@@ -49,7 +49,6 @@ class Transformer {
 
     async enqueue (values) {
         for (const value of values) {
-            console.log("value >>>", value)
             const promise = this._decorated.push((this._transform)(value))
             if (promise != null) {
                 await promise
