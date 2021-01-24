@@ -85,7 +85,7 @@ If you want to stream a shifter into a queue with back-pressure you can the
     const from = new Queue
     const to = new Queue
     const shifter = to.shifter()
-    const promise = from.shifter().pump(value => to.push(value))
+    const promise = from.shifter().push(value => to.push(value))
     await from.enqueue([ 1, 2, 3, null ])
     await promise
     okay(shifter.sync.splice(4), [ 1, 2, 3 ], 'pushed')

@@ -82,6 +82,5 @@ require('proof')(8, async okay => {
     okay({ value: 1 }, { value: 1 }, 'okay if deep strict equal')
 })
 
-
 // What would literate programming look like with Markdown as the base? Would
 // Markdown be the right language?
