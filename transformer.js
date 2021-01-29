@@ -65,4 +65,4 @@ class Transformer {
     }
 }
 
-module.exports = Transformer
+exports.Transformer = Transformer

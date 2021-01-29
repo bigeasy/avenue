@@ -1,7 +1,7 @@
 'use strict'
 
 require('proof')(113, async (okay) => {
-    const Queue = require('..')
+    const { Queue } = require('..')
     {
         const queue = new Queue
         okay(queue.size, 0, 'constructed size')

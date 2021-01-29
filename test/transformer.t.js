@@ -1,6 +1,6 @@
 require('proof')(9, async okay => {
-    const Transformer = require('../transformer')
-    const Queue = require('..')
+    const { Transformer } = require('../transformer')
+    const { Queue } = require('..')
     {
         const queue = new Queue(2)
         const transformer = new Transformer(queue, value => value == null ? null : -value)

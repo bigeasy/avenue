@@ -83,12 +83,12 @@ The `'avenue'` module exports a single `Queue` object.
 
 ```javascript
 //{ "name": "displayedRequire", "mode": "text" }
-const Queue = require('avenue')
+const { Queue } = require('avenue')
 ```
 
 ```javascript
 //{ "name": "test", "mode": "code" }
-const Queue = require('..')
+const { Queue } = require('..')
 ```
 
 If you want to stream a shifter into a queue with back-pressure you can the

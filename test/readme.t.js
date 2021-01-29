@@ -47,7 +47,7 @@
 // generally looks like this.
 
 require('proof')(4, async okay => {
-    const Queue = require('..')
+    const { Queue } = require('..')
 
     // If you want to stream a shifter into a queue with back-pressure you can the
     // `Shifter.async.push()` method.

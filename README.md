@@ -72,7 +72,7 @@ node test/readme.t.js
 The `'avenue'` module exports a single `Queue` object.
 
 ```javascript
-const Queue = require('avenue')
+const { Queue } = require('avenue')
 ```
 
 If you want to stream a shifter into a queue with back-pressure you can the

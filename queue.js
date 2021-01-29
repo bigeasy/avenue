@@ -145,4 +145,4 @@ class Queue {
     }
 }
 
-module.exports = Queue
+exports.Queue = Queue
