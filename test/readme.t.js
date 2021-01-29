@@ -41,11 +41,12 @@
 // effectively a no-op. The element is discarded the next time item an item is
 // pushed.
 //
-// This `README.md` is also a unit test using the Proof unit test framework. We'll
-// use the Proof `okay` function to assert out statements in the readme. A Proof
-// unit test generally looks like this.
+// This `README.md` is also a unit test using the
+// [Proof](https://github.com/bigeasy/proof) unit test framework. We'll use the
+// Proof `okay` function to assert out statements in the readme. A Proof unit test
+// generally looks like this.
 
-require('proof')(8, async okay => {
+require('proof')(4, async okay => {
     const Queue = require('..')
 
     // If you want to stream a shifter into a queue with back-pressure you can the
@@ -75,12 +76,9 @@ require('proof')(8, async okay => {
         okay(shifter.sync.splice(4), [ 1, 2, 3 ], 'pushed')
         okay(!shifter.destroyed, 'consumed did not receive terminator')
     }
-
-    okay('always okay')
-    okay(true, 'okay if true')
-    okay(1, 1, 'okay if equal')
-    okay({ value: 1 }, { value: 1 }, 'okay if deep strict equal')
 })
 
-// What would literate programming look like with Markdown as the base? Would
-// Markdown be the right language?
+// You can run this unit test yourself to see the output from the various
+// code sections of the readme.
+
+// The `'avenue'` module exports a single `Queue` object.

@@ -47,24 +47,39 @@ If there are no `Shifter`s for a queue, then any push onto the `Queue` is
 effectively a no-op. The element is discarded the next time item an item is
 pushed.
 
-This `README.md` is also a unit test using the Proof unit test framework. We'll
-use the Proof `okay` function to assert out statements in the readme. A Proof
-unit test generally looks like this.
+This `README.md` is also a unit test using the
+[Proof](https://github.com/bigeasy/proof) unit test framework. We'll use the
+Proof `okay` function to assert out statements in the readme. A Proof unit test
+generally looks like this.
 
 ```javascript
-//{ "code": { "tests": 8 }, "text": { "tests": 4  } }
+//{ "code": { "tests": 4 }, "text": { "tests": 4  } }
 require('proof')(%(tests)d, async okay => {
-    //{ "include": "testRequire" }
-    //{ "include": "test" }
-    okay('always okay')
-    okay(true, 'okay if true')
-    okay(1, 1, 'okay if equal')
-    okay({ value: 1 }, { value: 1 }, 'okay if deep strict equal')
+    //{ "include": "test", "mode": "code" }
+    //{ "include": "testDisplay", "mode": "text" }
 })
 ```
 
-What would literate programming look like with Markdown as the base? Would
-Markdown be the right language?
+```javascript
+//{ "name": "testDisplay", "mode": "text" }
+okay('always okay')
+okay(true, 'okay if true')
+okay(1, 1, 'okay if equal')
+okay({ value: 1 }, { value: 1 }, 'okay if deep strict equal')
+```
+
+You can run this unit test yourself to see the output from the various
+code sections of the readme.
+
+```text
+//{ "mode": "text" }
+git clone git@github.com:bigeasy/avenue.git
+cd avenue
+npm install --no-package-lock --no-save
+node test/readme.t.js
+```
+
+The `'avenue'` module exports a single `Queue` object.
 
 ```javascript
 //{ "name": "displayedRequire", "mode": "text" }
@@ -72,7 +87,7 @@ const Queue = require('avenue')
 ```
 
 ```javascript
-//{ "name": "testRequire", "mode": "code" }
+//{ "name": "test", "mode": "code" }
 const Queue = require('..')
 ```
 

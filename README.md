@@ -45,9 +45,10 @@ If there are no `Shifter`s for a queue, then any push onto the `Queue` is
 effectively a no-op. The element is discarded the next time item an item is
 pushed.
 
-This `README.md` is also a unit test using the Proof unit test framework. We'll
-use the Proof `okay` function to assert out statements in the readme. A Proof
-unit test generally looks like this.
+This `README.md` is also a unit test using the
+[Proof](https://github.com/bigeasy/proof) unit test framework. We'll use the
+Proof `okay` function to assert out statements in the readme. A Proof unit test
+generally looks like this.
 
 ```javascript
 require('proof')(4, async okay => {
@@ -58,8 +59,17 @@ require('proof')(4, async okay => {
 })
 ```
 
-What would literate programming look like with Markdown as the base? Would
-Markdown be the right language?
+You can run this unit test yourself to see the output from the various
+code sections of the readme.
+
+```text
+git clone git@github.com:bigeasy/avenue.git
+cd avenue
+npm install --no-package-lock --no-save
+node test/readme.t.js
+```
+
+The `'avenue'` module exports a single `Queue` object.
 
 ```javascript
 const Queue = require('avenue')
