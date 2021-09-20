@@ -2,7 +2,7 @@
 // [![codecov](https://codecov.io/gh/bigeasy/avenue/branch/master/graph/badge.svg)](https://codecov.io/gh/bigeasy/avenue)
 // [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 //
-// An async/await event queue.
+// An `async`/`await` multiplexed event queue.
 //
 // | What          | Where                                         |
 // | --- | --- |
@@ -82,3 +82,5 @@ require('proof')(4, async okay => {
 // code sections of the readme.
 
 // The `'avenue'` module exports a single `Queue` object.
+
+// **TODO** Incomplete.

@@ -2,7 +2,7 @@
 [![codecov](https://codecov.io/gh/bigeasy/avenue/branch/master/graph/badge.svg)](https://codecov.io/gh/bigeasy/avenue)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-An async/await event queue.
+An `async`/`await` multiplexed event queue.
 
 | What          | Where                                         |
 | --- | --- |
@@ -102,3 +102,5 @@ await promise
 okay(shifter.sync.splice(4), [ 1, 2, 3 ], 'pushed')
 okay(!shifter.destroyed, 'consumed did not receive terminator')
 ```
+
+**TODO** Incomplete.
