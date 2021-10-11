@@ -14,8 +14,37 @@ An `async`/`await` multiplexed event queue.
 | Coverage:     | https://codecov.io/gh/bigeasy/avenue          |
 | License:      | MIT                                           |
 
-```text
+
+Avenue installs from NPM.
+
+```
 npm install avenue
+```
+
+## Living `README.md`
+
+This `README.md` is also a unit test using the
+[Proof](https://github.com/bigeasy/proof) unit test framework. We'll use the
+Proof `okay` function to assert out statements in the readme. A Proof unit test
+generally looks like this.
+
+```javascript
+require('proof')(4, async okay => {
+    okay('always okay')
+    okay(true, 'okay if true')
+    okay(1, 1, 'okay if equal')
+    okay({ value: 1 }, { value: 1 }, 'okay if deep strict equal')
+})
+```
+
+You can run this unit test yourself to see the output from the various
+code sections of the readme.
+
+```text
+git clone git@github.com:bigeasy/avenue.git
+cd avenue
+npm install --no-package-lock --no-save
+node test/readme.t.js
 ```
 
 ## Overview
@@ -44,30 +73,6 @@ when the all the `Shifter`s `shift` past a node in the `Queue`.
 If there are no `Shifter`s for a queue, then any push onto the `Queue` is
 effectively a no-op. The element is discarded the next time item an item is
 pushed.
-
-This `README.md` is also a unit test using the
-[Proof](https://github.com/bigeasy/proof) unit test framework. We'll use the
-Proof `okay` function to assert out statements in the readme. A Proof unit test
-generally looks like this.
-
-```javascript
-require('proof')(4, async okay => {
-    okay('always okay')
-    okay(true, 'okay if true')
-    okay(1, 1, 'okay if equal')
-    okay({ value: 1 }, { value: 1 }, 'okay if deep strict equal')
-})
-```
-
-You can run this unit test yourself to see the output from the various
-code sections of the readme.
-
-```text
-git clone git@github.com:bigeasy/avenue.git
-cd avenue
-npm install --no-package-lock --no-save
-node test/readme.t.js
-```
 
 The `'avenue'` module exports a single `Queue` object.
 
