@@ -23,7 +23,7 @@
     },
     "devDependencies":
     {
-                            "proof":                        "^9.0.3"
+                            "proof":                        "^9.0.4"
     },
     "main":                 "queue",
     "scripts":
